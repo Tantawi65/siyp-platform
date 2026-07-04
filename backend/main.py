@@ -34,21 +34,6 @@ else:
 
 app.include_router(api_router, prefix="/api")
 
-@app.get("/api/fix-sequences")
-def fix_sequences(db: Session = Depends(get_db)):
-    try:
-        tables = ['users', 'profiles', 'opportunities', 'saved_opportunities', 'tags', 'categories', 'programs']
-        for table in tables:
-            db.execute(text(f"SELECT setval(pg_get_serial_sequence('{table}', 'id'), COALESCE(MAX(id), 1) ) FROM {table};"))
-        
-        db.commit()
-        return {"status": "success"}
-    except Exception as e:
-        import traceback
-        error_msg = f"{str(e)}\n{traceback.format_exc()}"
-        from fastapi import HTTPException
-        raise HTTPException(status_code=500, detail=error_msg)
-
 # Uploads are now handled via Cloudinary, so local static file mounting is removed.
 
 
