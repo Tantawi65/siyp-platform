@@ -11,3 +11,8 @@ uvicorn backend.main:app --reload
 backend:
 
 npm run dev
+
+
+git add .
+git commit -m "Changed the text on the homepage"
+git push

@@ -22,7 +22,7 @@ const PrivacyPolicyPage: React.FC = () => {
 
             <h3 className="text-xl font-bold mt-8 mb-4">1. Important information and who we are</h3>
             <p>
-              SIYP Team is the controller and responsible for your personal data. We have appointed a data privacy manager who is responsible for overseeing questions in relation to this privacy policy. If you have any questions about this privacy policy, please contact us at <strong>contact@siyp.team</strong>.
+              SIYP Team is the controller and responsible for your personal data. We have appointed a data privacy manager who is responsible for overseeing questions in relation to this privacy policy. If you have any questions about this privacy policy, please contact us at <strong>our facebook page</strong>.
             </p>
 
             <h3 className="text-xl font-bold mt-8 mb-4">2. The data we collect about you</h3>

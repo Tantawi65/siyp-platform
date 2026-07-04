@@ -128,10 +128,10 @@ const LandingPage: React.FC = () => {
               Explore Opportunities <ArrowRight size={18} />
             </Link>
             <Link
-              to="/register"
+              to="/about"
               className="flex items-center gap-2 px-8 py-4 rounded-full border border-white/30 text-white bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all text-base font-semibold"
             >
-              Join for Free
+              About Us
             </Link>
           </div>
 
