@@ -145,7 +145,7 @@ const ExplorePage: React.FC = () => {
   const [country, setCountry] = useState('');
 
   React.useEffect(() => {
-    fetch('/api/opportunities/')
+    fetch('/api/opportunities')
       .then(res => res.json())
       .then(data => {
         setOpportunities(Array.isArray(data) ? data : []);
