@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, CheckCircle, ShieldCheck, Building2, Check, X, CheckSquare, Trash2, Edit3 } from 'lucide-react';
+import { Clock, CheckCircle, ShieldCheck, Building2, Check, X, CheckSquare, Trash2, Edit3, Eye, Shield } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../layouts/Navbar';
 
@@ -532,18 +532,21 @@ const AdminDashboardPage: React.FC = () => {
                           </span>
                         </td>
                         <td className="py-4 text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <Link to={`/profile/${u.id}`} target="_blank" className="px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-xs font-semibold">
-                              View Profile
+                          <div className="flex items-center justify-end gap-1.5 sm:gap-2">
+                            <Link to={`/profile/${u.id}`} target="_blank" className="p-2 lg:px-3 lg:py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors" title="View Profile">
+                              <Eye size={14} className="shrink-0" />
+                              <span className="hidden lg:inline">View Profile</span>
                             </Link>
                             {u.role === 'user' && (
-                              <button onClick={() => makeAdmin(u.id)} className="px-3 py-1.5 bg-yellow-50 text-yellow-600 hover:bg-yellow-100 rounded-lg text-xs font-semibold">
-                                Make Admin
+                              <button onClick={() => makeAdmin(u.id)} className="p-2 lg:px-3 lg:py-1.5 bg-yellow-50 text-yellow-600 hover:bg-yellow-100 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors" title="Make Admin">
+                                <Shield size={14} className="shrink-0" />
+                                <span className="hidden lg:inline">Make Admin</span>
                               </button>
                             )}
                             {u.role !== 'owner' && (
-                              <button onClick={() => deleteUser(u.id)} className="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-xs font-semibold">
-                                Remove Account
+                              <button onClick={() => deleteUser(u.id)} className="p-2 lg:px-3 lg:py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors" title="Remove Account">
+                                <Trash2 size={14} className="shrink-0" />
+                                <span className="hidden lg:inline">Remove</span>
                               </button>
                             )}
                           </div>
