@@ -1,0 +1,41 @@
+# Environment variables (SUPER IMPORTANT)
+.env
+backend/.env
+frontend/.env
+
+# Virtual environments
+venv/
+backend/venv/
+env/
+.env_dir/
+
+# Node modules
+node_modules/
+frontend/node_modules/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Build directories
+dist/
+frontend/dist/
+build/
+*.egg-info/
+
+# Local databases
+*.db
+*.sqlite3
+sql_app.db
+backend/sql_app.db
+
+# Uploads and media
+uploads/
+backend/uploads/
+
+# IDE files
+.vscode/
+.idea/
+.DS_Store
