@@ -3,8 +3,9 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from core.database import get_db
-from models.user import User
+from models.user import User, Profile
 from models.opportunity import Opportunity
+from models.tracker import OpportunityTracker
 from models.program import ProgramCatalog, user_accepted_programs
 from schemas.user import UserResponse, UserCreate
 from schemas.opportunity import OpportunityResponse
@@ -169,6 +170,12 @@ def delete_user(id: int, db: Session = Depends(get_db), current_owner: User = De
     if user.role == "owner":
         raise HTTPException(status_code=400, detail="Cannot delete owner")
         
+    # Manually delete related data to prevent ForeignKey constraint violations
+    db.execute(user_accepted_programs.delete().where(user_accepted_programs.c.user_id == id))
+    db.query(Opportunity).filter(Opportunity.author_id == id).delete()
+    db.query(Profile).filter(Profile.user_id == id).delete()
+    db.query(OpportunityTracker).filter(OpportunityTracker.user_id == id).delete()
+    
     db.delete(user)
     db.commit()
     return {"message": "User deleted"}
