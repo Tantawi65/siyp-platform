@@ -32,28 +32,33 @@ def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth2Passw
 
 @router.post("/register", response_model=UserResponse)
 def register_user(user_in: UserCreate, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == user_in.email).first()
-    if user:
-        raise HTTPException(
-            status_code=400,
-            detail="The user with this email already exists in the system.",
+    try:
+        user = db.query(User).filter(User.email == user_in.email).first()
+        if user:
+            raise HTTPException(
+                status_code=400,
+                detail="The user with this email already exists in the system.",
+            )
+        
+        hashed_password = get_password_hash(user_in.password)
+        new_user = User(
+            email=user_in.email,
+            hashed_password=hashed_password,
+            role="user",
+            is_active=True,
+            is_verified=False
         )
-    
-    hashed_password = get_password_hash(user_in.password)
-    new_user = User(
-        email=user_in.email,
-        hashed_password=hashed_password,
-        role="user",
-        is_active=True,
-        is_verified=False
-    )
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
 
-    # create profile with name
-    profile = Profile(user_id=new_user.id, name=user_in.name)
-    db.add(profile)
-    db.commit()
+        # create profile with name
+        profile = Profile(user_id=new_user.id, name=user_in.name)
+        db.add(profile)
+        db.commit()
 
-    return new_user
+        return new_user
+    except Exception as e:
+        import traceback
+        error_msg = f"{str(e)}\n{traceback.format_exc()}"
+        raise HTTPException(status_code=500, detail=error_msg)

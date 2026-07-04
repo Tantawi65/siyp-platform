@@ -13,19 +13,15 @@ router = APIRouter()
 
 @router.get("/", response_model=List[SavedOpportunityResponse])
 def get_saved_opportunities(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    # Need to manually join or ensure the opportunity relationship is loaded if we added it,
-    # but since we didn't define a relationship on the model, we can fetch them and populate.
-    # To keep it simple, let's just return the saved opportunities and the frontend can fetch details if needed, 
-    # or we can modify the model to include the relationship.
-    # Actually, SQLAlchemy allows us to manually fetch the opportunity and attach it to the response if needed.
-    
-    saved = db.query(SavedOpportunity).filter(SavedOpportunity.user_id == current_user.id).all()
-    
-    # Attach opportunities manually for the response
-    for s in saved:
-        s.opportunity = db.query(Opportunity).filter(Opportunity.id == s.opportunity_id).first()
-        
-    return saved
+    try:
+        saved = db.query(SavedOpportunity).filter(SavedOpportunity.user_id == current_user.id).all()
+        for s in saved:
+            s.opportunity = db.query(Opportunity).filter(Opportunity.id == s.opportunity_id).first()
+        return saved
+    except Exception as e:
+        import traceback
+        error_msg = f"{str(e)}\n{traceback.format_exc()}"
+        raise HTTPException(status_code=500, detail=error_msg)
 
 @router.post("/", response_model=SavedOpportunityResponse)
 def save_opportunity(
