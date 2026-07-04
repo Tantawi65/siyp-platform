@@ -42,8 +42,9 @@ const EditProfilePage: React.FC = () => {
   const [availablePrograms, setAvailablePrograms] = useState<any[]>([]);
   const [acceptedPrograms, setAcceptedPrograms] = useState<any[]>([]);
   const [selectedProgram, setSelectedProgram] = useState('');
-  const [newProgram, setNewProgram] = useState({ name: '', organization: '', country: '', description: 'Added by user' });
   const [addingProgram, setAddingProgram] = useState(false);
+  const [addAttempted, setAddAttempted] = useState(false);
+  const [newProgram, setNewProgram] = useState({ name: '', organization: '', country: '', description: 'Added by user' });
   
   // Custom dropdown state
   const [searchQuery, setSearchQuery] = useState('');
@@ -184,8 +185,14 @@ const EditProfilePage: React.FC = () => {
 
   const handleAddProgram = async () => {
     if (!selectedProgram) return;
+
+    if (selectedProgram === 'other' && (!newProgram.name || !newProgram.organization)) {
+      setAddAttempted(true);
+      return;
+    }
+    
     setAddingProgram(true);
-    setMessage({ text: '', type: '' });
+    setAddAttempted(false);
     
     try {
       const token = localStorage.getItem('token');
@@ -481,10 +488,10 @@ const EditProfilePage: React.FC = () => {
                           ? "Admin Privilege: This program will be instantly verified and added to the global catalog." 
                           : "This will be submitted to the admins for verification, but added to your profile immediately."}
                       </p>
-                      <input type="text" placeholder="Program Name *" className={`input-field py-2.5 text-sm bg-white ${!newProgram.name ? 'border-red-200 focus:border-red-400 focus:ring-red-400/20' : ''}`} value={newProgram.name} onChange={e => setNewProgram({...newProgram, name: e.target.value})} />
-                      <input type="text" placeholder="Organization *" className={`input-field py-2.5 text-sm bg-white ${!newProgram.organization ? 'border-red-200 focus:border-red-400 focus:ring-red-400/20' : ''}`} value={newProgram.organization} onChange={e => setNewProgram({...newProgram, organization: e.target.value})} />
+                      <input type="text" placeholder="Program Name *" className={`input-field py-2.5 text-sm bg-white ${addAttempted && !newProgram.name ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : ''}`} value={newProgram.name} onChange={e => {setNewProgram({...newProgram, name: e.target.value}); setAddAttempted(false);}} />
+                      <input type="text" placeholder="Organization *" className={`input-field py-2.5 text-sm bg-white ${addAttempted && !newProgram.organization ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : ''}`} value={newProgram.organization} onChange={e => {setNewProgram({...newProgram, organization: e.target.value}); setAddAttempted(false);}} />
                       <input type="text" placeholder="Country (optional)" className="input-field py-2.5 text-sm bg-white" value={newProgram.country} onChange={e => setNewProgram({...newProgram, country: e.target.value})} />
-                      {(!newProgram.name || !newProgram.organization) && (
+                      {addAttempted && (!newProgram.name || !newProgram.organization) && (
                         <p className="text-xs text-red-500 font-medium -mt-1">* Program Name and Organization are required</p>
                       )}
                     </div>
@@ -494,8 +501,8 @@ const EditProfilePage: React.FC = () => {
                     <button 
                       type="button" 
                       onClick={handleAddProgram} 
-                      disabled={addingProgram || (selectedProgram === 'other' && (!newProgram.name || !newProgram.organization))}
-                      className="mt-4 btn-secondary text-sm px-4 py-2 bg-white w-full sm:w-auto"
+                      disabled={addingProgram}
+                      className="mt-4 btn-secondary text-sm px-4 py-2 w-full sm:w-auto"
                     >
                       {addingProgram ? 'Adding...' : <><Plus size={14} /> Add to Profile</>}
                     </button>
