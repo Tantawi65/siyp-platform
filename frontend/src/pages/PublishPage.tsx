@@ -77,7 +77,7 @@ const PublishPage: React.FC = () => {
       }
 
       // 2. Submit opportunity
-      const res = await fetch('/api/opportunities/', {
+      const res = await fetch('/api/opportunities', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
