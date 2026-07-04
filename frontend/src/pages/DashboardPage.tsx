@@ -180,9 +180,9 @@ const DashboardPage: React.FC = () => {
           {COLUMNS.map(col => {
             const colCards = cards.filter(c => c.status === col.id);
             return (
-              <div key={col.id} className="w-full lg:w-[340px] shrink-0 flex flex-col rounded-2xl bg-white border border-gray-100 shadow-sm overflow-hidden">
+              <div key={col.id} className="w-full lg:w-[340px] shrink-0 flex flex-col rounded-2xl bg-white border border-gray-100 shadow-sm">
                 {/* Column Header */}
-                <div className="p-4 flex items-center justify-between border-b border-gray-100">
+                <div className="p-4 flex items-center justify-between border-b border-gray-100 rounded-t-2xl">
                   <div className="flex items-center gap-2">
                     <div className={`w-2 h-2 rounded-full ${col.dotColor}`} />
                     <h3 className="font-bold text-sm text-[#1A1A2E]" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>{col.label}</h3>
@@ -191,7 +191,7 @@ const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* Cards */}
-                <div className="p-3 flex flex-col gap-3 flex-grow min-h-[220px] lg:min-h-[300px]">
+                <div className="p-3 flex flex-col gap-3 flex-grow min-h-[120px] lg:min-h-[300px]">
                   {colCards.map(card => (
                     <ApplicationCard key={card.id} card={card} onMove={moveCard} onRemove={removeCard} />
                   ))}
