@@ -5,7 +5,7 @@ from typing import List
 from core.database import get_db
 from models.user import User, Profile
 from models.opportunity import Opportunity
-from models.tracker import OpportunityTracker
+from models.tracker import SavedOpportunity
 from models.program import ProgramCatalog, user_accepted_programs
 from schemas.user import UserResponse, UserCreate
 from schemas.opportunity import OpportunityResponse
@@ -179,7 +179,7 @@ def delete_user(id: int, db: Session = Depends(get_db), current_owner: User = De
         opp.author_id = current_owner.id
         
     db.query(Profile).filter(Profile.user_id == id).delete()
-    db.query(OpportunityTracker).filter(OpportunityTracker.user_id == id).delete()
+    db.query(SavedOpportunity).filter(SavedOpportunity.user_id == id).delete()
     
     db.delete(user)
     db.commit()
