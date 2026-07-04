@@ -235,11 +235,14 @@ const ExplorePage: React.FC = () => {
     // but usually opportunities are returned in ID order. We will sort by ID descending.
     filtered = filtered.sort((a, b) => b.id - a.id);
   } else if (sortBy === 'Deadline Soonest') {
-    filtered = filtered.sort((a, b) => {
-      if (!a.deadline) return 1;
-      if (!b.deadline) return -1;
-      return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
-    });
+    const now = new Date().getTime();
+    filtered = filtered
+      .filter(opp => !opp.deadline || new Date(opp.deadline).getTime() >= now)
+      .sort((a, b) => {
+        if (!a.deadline) return 1;
+        if (!b.deadline) return -1;
+        return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+      });
   }
 
   return (
