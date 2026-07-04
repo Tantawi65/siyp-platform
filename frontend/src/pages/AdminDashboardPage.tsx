@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, CheckCircle, ShieldCheck, Building2, Check, X, CheckSquare, Trash2, Edit3, Eye, Shield } from 'lucide-react';
+import { Clock, CheckCircle, ShieldCheck, Building2, Check, X, CheckSquare, Trash2, Edit3, Eye, Shield, MoreHorizontal } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../layouts/Navbar';
 
@@ -18,6 +18,84 @@ interface Program {
 }
 
 type Tab = 'pending_opps' | 'all_opps' | 'programs' | 'admins' | 'all_users';
+
+const UserRow: React.FC<{ u: any; makeAdmin: (id: number) => void; deleteUser: (id: number) => void; }> = ({ u, makeAdmin, deleteUser }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <tr className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
+      <td className="py-4">#{u.id}</td>
+      <td className="py-4 font-medium">{u.email}</td>
+      <td className="py-4">
+        <span className={`px-2 py-1 rounded-md text-xs font-semibold ${u.role === 'owner' ? 'bg-purple-50 text-purple-600' : u.role === 'admin' ? 'bg-[#1B5442]/10 text-[#1B5442]' : 'bg-gray-100 text-gray-600'}`}>
+          {u.role.charAt(0).toUpperCase() + u.role.slice(1)}
+        </span>
+      </td>
+      <td className="py-4">
+        <span className={`flex items-center gap-1.5 text-xs font-medium ${u.is_active ? 'text-green-600' : 'text-gray-400'}`}>
+          <div className={`w-1.5 h-1.5 rounded-full ${u.is_active ? 'bg-green-500' : 'bg-gray-300'}`} />
+          {u.is_active ? 'Active' : 'Inactive'}
+        </span>
+      </td>
+      <td className="py-4 text-right relative">
+        {/* Desktop Actions */}
+        <div className="hidden lg:flex items-center justify-end gap-2">
+          <Link to={`/profile/${u.id}`} target="_blank" className="p-2 lg:px-3 lg:py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors" title="View Profile">
+            <Eye size={14} className="shrink-0" />
+            <span>View Profile</span>
+          </Link>
+          {u.role === 'user' && (
+            <button onClick={() => makeAdmin(u.id)} className="p-2 lg:px-3 lg:py-1.5 bg-yellow-50 text-yellow-600 hover:bg-yellow-100 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors" title="Make Admin">
+              <Shield size={14} className="shrink-0" />
+              <span>Make Admin</span>
+            </button>
+          )}
+          {u.role !== 'owner' && (
+            <button onClick={() => deleteUser(u.id)} className="p-2 lg:px-3 lg:py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors" title="Remove Account">
+              <Trash2 size={14} className="shrink-0" />
+              <span>Remove</span>
+            </button>
+          )}
+        </div>
+        
+        {/* Mobile Dropdown Actions */}
+        <div className="lg:hidden flex items-center justify-end relative" ref={menuRef}>
+          <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors">
+            <MoreHorizontal size={18} />
+          </button>
+          {menuOpen && (
+            <div className="absolute right-0 top-full mt-1 bg-white border border-gray-100 shadow-xl rounded-xl w-48 z-20 overflow-hidden text-left">
+              <Link to={`/profile/${u.id}`} target="_blank" className="w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-50 text-gray-700 transition-colors">
+                <Eye size={15} className="text-blue-500" /> View Profile
+              </Link>
+              {u.role === 'user' && (
+                <button onClick={() => { makeAdmin(u.id); setMenuOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-50 text-gray-700 border-t border-gray-50 transition-colors text-left">
+                  <Shield size={15} className="text-yellow-500" /> Make Admin
+                </button>
+              )}
+              {u.role !== 'owner' && (
+                <button onClick={() => { deleteUser(u.id); setMenuOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 border-t border-gray-50 transition-colors text-left">
+                  <Trash2 size={15} /> Remove Account
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
+};
 
 const AdminDashboardPage: React.FC = () => {
   const { user } = useAuth();
@@ -517,41 +595,7 @@ const AdminDashboardPage: React.FC = () => {
                   </thead>
                   <tbody>
                     {allUsers.map(u => (
-                      <tr key={u.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
-                        <td className="py-4">#{u.id}</td>
-                        <td className="py-4 font-medium">{u.email}</td>
-                        <td className="py-4">
-                          <span className={`px-2 py-1 rounded-md text-xs font-semibold ${u.role === 'owner' ? 'bg-purple-50 text-purple-600' : u.role === 'admin' ? 'bg-[#1B5442]/10 text-[#1B5442]' : 'bg-gray-100 text-gray-600'}`}>
-                            {u.role.charAt(0).toUpperCase() + u.role.slice(1)}
-                          </span>
-                        </td>
-                        <td className="py-4">
-                          <span className={`flex items-center gap-1.5 text-xs font-medium ${u.is_active ? 'text-green-600' : 'text-gray-400'}`}>
-                            <div className={`w-1.5 h-1.5 rounded-full ${u.is_active ? 'bg-green-500' : 'bg-gray-300'}`} />
-                            {u.is_active ? 'Active' : 'Inactive'}
-                          </span>
-                        </td>
-                        <td className="py-4 text-right">
-                          <div className="flex items-center justify-end gap-1.5 sm:gap-2">
-                            <Link to={`/profile/${u.id}`} target="_blank" className="p-2 lg:px-3 lg:py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors" title="View Profile">
-                              <Eye size={14} className="shrink-0" />
-                              <span className="hidden lg:inline">View Profile</span>
-                            </Link>
-                            {u.role === 'user' && (
-                              <button onClick={() => makeAdmin(u.id)} className="p-2 lg:px-3 lg:py-1.5 bg-yellow-50 text-yellow-600 hover:bg-yellow-100 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors" title="Make Admin">
-                                <Shield size={14} className="shrink-0" />
-                                <span className="hidden lg:inline">Make Admin</span>
-                              </button>
-                            )}
-                            {u.role !== 'owner' && (
-                              <button onClick={() => deleteUser(u.id)} className="p-2 lg:px-3 lg:py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors" title="Remove Account">
-                                <Trash2 size={14} className="shrink-0" />
-                                <span className="hidden lg:inline">Remove</span>
-                              </button>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
+                      <UserRow key={u.id} u={u} makeAdmin={makeAdmin} deleteUser={deleteUser} />
                     ))}
                   </tbody>
                 </table>
