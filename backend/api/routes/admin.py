@@ -4,7 +4,7 @@ from typing import List
 
 from core.database import get_db
 from models.user import User, Profile
-from models.opportunity import Opportunity
+from models.opportunity import Opportunity, opportunity_tags
 from models.tracker import SavedOpportunity
 from models.program import ProgramCatalog, user_accepted_programs
 from schemas.user import UserResponse, UserCreate
@@ -59,6 +59,10 @@ def delete_opportunity(id: int, db: Session = Depends(get_db), current_admin: Us
     if not opportunity:
         raise HTTPException(status_code=404, detail="Opportunity not found")
         
+    # Manual cascade deletes to prevent ForeignKey constraint violations
+    db.query(SavedOpportunity).filter(SavedOpportunity.opportunity_id == id).delete()
+    db.execute(opportunity_tags.delete().where(opportunity_tags.c.opportunity_id == id))
+    
     db.delete(opportunity)
     db.commit()
     return {"message": "Opportunity deleted"}
