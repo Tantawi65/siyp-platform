@@ -52,7 +52,10 @@ const FilterSection: React.FC<{ title: string; children: React.ReactNode }> = ({
 // ─── Opportunity Card ─────────────────────────────────────────
 const OpportunityCard: React.FC<{ opp: Opportunity, isAdmin: boolean, trackerId: number | null, onToggleSave: (oppId: number, trackerId: number | null) => void }> = ({ opp, isAdmin, trackerId, onToggleSave }) => {
   const [saving, setSaving] = useState(false);
-  const isUrgent = new Date(opp.deadline).getTime() - new Date().getTime() < 14 * 24 * 60 * 60 * 1000;
+  const now = new Date().getTime();
+  const deadlineTime = new Date(opp.deadline).getTime();
+  const isClosed = deadlineTime < now;
+  const isUrgent = !isClosed && (deadlineTime - now < 14 * 24 * 60 * 60 * 1000);
   const formattedDate = opp.deadline ? new Date(opp.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
   
   const handleBookmarkClick = async () => {
@@ -69,6 +72,7 @@ const OpportunityCard: React.FC<{ opp: Opportunity, isAdmin: boolean, trackerId:
         <div className="flex flex-wrap gap-2">
           <span className={`badge ${typeColors[opp.opportunity_type] || 'bg-gray-100 text-gray-600'}`}>{opp.opportunity_type}</span>
           <span className={`badge ${fundingColors[opp.funding_type] || 'bg-gray-100 text-gray-600'}`}>{opp.funding_type}</span>
+          {isClosed && <span className="badge bg-gray-200 text-gray-700">🔒 Closed</span>}
           {isUrgent && <span className="badge bg-red-100 text-red-600">🔥 Closing Soon</span>}
         </div>
         <button 
