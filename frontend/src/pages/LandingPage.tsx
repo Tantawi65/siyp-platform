@@ -120,7 +120,7 @@ const StatsSection: React.FC = () => {
           ref={ref}
           className="bg-[#1B5442] rounded-3xl px-8 py-12 grid grid-cols-1 sm:grid-cols-3 gap-10 text-center divide-y sm:divide-y-0 sm:divide-x divide-white/10"
         >
-          <StatCard target={100000} suffix="+" label="Views" delay={0} started={started} />
+          <StatCard target={100} suffix="K+" label="Views" delay={0} started={started} />
           <StatCard target={3300} suffix="+" label="Followers" delay={200} started={started} />
           <StatCard target={4} label="Live Sessions" delay={400} started={started} />
         </div>

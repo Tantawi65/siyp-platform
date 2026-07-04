@@ -175,12 +175,12 @@ const DashboardPage: React.FC = () => {
           onMouseLeave={handleMouseLeave}
           onMouseUp={handleMouseUp}
           onMouseMove={handleMouseMove}
-          className={`flex flex-col lg:flex-row gap-6 lg:gap-5 overflow-visible lg:overflow-x-auto pb-4 lg:no-scrollbar flex-1 items-stretch lg:items-start ${isDragging ? 'cursor-grabbing select-none' : 'cursor-grab'}`}
+          className={`flex gap-5 overflow-x-auto pb-4 no-scrollbar flex-1 items-start ${isDragging ? 'cursor-grabbing select-none' : 'cursor-grab'}`}
         >
           {COLUMNS.map(col => {
             const colCards = cards.filter(c => c.status === col.id);
             return (
-              <div key={col.id} className="w-full lg:w-72 shrink-0 flex flex-col rounded-2xl bg-white border border-gray-100 shadow-sm overflow-hidden">
+              <div key={col.id} className="w-[300px] shrink-0 flex flex-col rounded-2xl bg-white border border-gray-100 shadow-sm overflow-hidden">
                 {/* Column Header */}
                 <div className="p-4 flex items-center justify-between border-b border-gray-100">
                   <div className="flex items-center gap-2">

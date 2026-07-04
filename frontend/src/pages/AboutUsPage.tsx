@@ -180,7 +180,7 @@ const AboutUsPage: React.FC = () => {
           <p className="text-center text-white/50 text-sm uppercase tracking-widest mb-12 font-semibold">Our Impact So Far</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-6">
             <StatItem value={3300} suffix="+" label="Facebook Followers" color="text-white" start={statsVisible} />
-            <StatItem value={100000} suffix="+" label="Content Views" color="text-[#A8D5C4]" start={statsVisible} />
+            <StatItem value={100} suffix="K+" label="Content Views" color="text-[#A8D5C4]" start={statsVisible} />
             <StatItem value={4} label="Org Partnerships" color="text-white" start={statsVisible} />
             <StatItem value={4} label="Live Sessions" color="text-[#A8D5C4]" start={statsVisible} />
           </div>
