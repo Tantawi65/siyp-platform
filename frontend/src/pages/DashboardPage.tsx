@@ -191,7 +191,7 @@ const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* Cards */}
-                <div className="p-3 flex flex-col gap-3 flex-grow min-h-[120px] lg:min-h-[300px]">
+                <div className="p-3 flex flex-col gap-3 flex-grow min-h-[220px] lg:min-h-[300px]">
                   {colCards.map(card => (
                     <ApplicationCard key={card.id} card={card} onMove={moveCard} onRemove={removeCard} />
                   ))}
