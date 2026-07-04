@@ -35,14 +35,14 @@ const UserRow: React.FC<{ u: any; makeAdmin: (id: number) => void; deleteUser: (
 
   return (
     <tr className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
-      <td className="py-4">#{u.id}</td>
-      <td className="py-4 font-medium">{u.email}</td>
+      <td className="py-4 hidden md:table-cell">#{u.id}</td>
+      <td className="py-4 font-medium truncate max-w-[150px] md:max-w-none">{u.email}</td>
       <td className="py-4">
-        <span className={`px-2 py-1 rounded-md text-xs font-semibold ${u.role === 'owner' ? 'bg-purple-50 text-purple-600' : u.role === 'admin' ? 'bg-[#1B5442]/10 text-[#1B5442]' : 'bg-gray-100 text-gray-600'}`}>
+        <span className={`px-2 py-1 rounded-md text-[10px] md:text-xs font-semibold ${u.role === 'owner' ? 'bg-purple-50 text-purple-600' : u.role === 'admin' ? 'bg-[#1B5442]/10 text-[#1B5442]' : 'bg-gray-100 text-gray-600'}`}>
           {u.role.charAt(0).toUpperCase() + u.role.slice(1)}
         </span>
       </td>
-      <td className="py-4">
+      <td className="py-4 hidden md:table-cell">
         <span className={`flex items-center gap-1.5 text-xs font-medium ${u.is_active ? 'text-green-600' : 'text-gray-400'}`}>
           <div className={`w-1.5 h-1.5 rounded-full ${u.is_active ? 'bg-green-500' : 'bg-gray-300'}`} />
           {u.is_active ? 'Active' : 'Inactive'}
@@ -69,26 +69,43 @@ const UserRow: React.FC<{ u: any; makeAdmin: (id: number) => void; deleteUser: (
           )}
         </div>
         
-        {/* Mobile Dropdown Actions */}
-        <div className="lg:hidden flex items-center justify-end relative" ref={menuRef}>
-          <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors">
+        {/* Mobile Dropdown Modal (Bottom Sheet style) */}
+        <div className="lg:hidden flex items-center justify-end">
+          <button onClick={() => setMenuOpen(true)} className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors">
             <MoreHorizontal size={18} />
           </button>
           {menuOpen && (
-            <div className="absolute right-0 top-full mt-1 bg-white border border-gray-100 shadow-xl rounded-xl w-48 z-20 overflow-hidden text-left">
-              <Link to={`/profile/${u.id}`} target="_blank" className="w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-50 text-gray-700 transition-colors">
-                <Eye size={15} className="text-blue-500" /> View Profile
-              </Link>
-              {u.role === 'user' && (
-                <button onClick={() => { makeAdmin(u.id); setMenuOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-50 text-gray-700 border-t border-gray-50 transition-colors text-left">
-                  <Shield size={15} className="text-yellow-500" /> Make Admin
-                </button>
-              )}
-              {u.role !== 'owner' && (
-                <button onClick={() => { deleteUser(u.id); setMenuOpen(false); }} className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 border-t border-gray-50 transition-colors text-left">
-                  <Trash2 size={15} /> Remove Account
-                </button>
-              )}
+            <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4 sm:p-0">
+              <div className="absolute inset-0 bg-[#1A1A2E]/40 backdrop-blur-sm" onClick={() => setMenuOpen(false)} />
+              <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden animate-in slide-in-from-bottom-4 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200">
+                <div className="p-4 border-b border-gray-100 flex justify-between items-center">
+                  <div className="text-left">
+                    <h3 className="font-bold text-[#1A1A2E] text-sm">Manage User</h3>
+                    <p className="text-xs text-gray-500 truncate max-w-[200px]">{u.email}</p>
+                  </div>
+                  <button onClick={() => setMenuOpen(false)} className="p-2 text-gray-400 hover:bg-gray-100 rounded-full">
+                    <X size={18} />
+                  </button>
+                </div>
+                <div className="flex flex-col pb-2">
+                  <Link to={`/profile/${u.id}`} target="_blank" className="w-full flex items-center gap-4 px-5 py-3.5 text-sm font-semibold hover:bg-gray-50 text-gray-700 transition-colors">
+                    <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><Eye size={16} /></div> 
+                    View Profile
+                  </Link>
+                  {u.role === 'user' && (
+                    <button onClick={() => { makeAdmin(u.id); setMenuOpen(false); }} className="w-full flex items-center gap-4 px-5 py-3.5 text-sm font-semibold hover:bg-gray-50 text-gray-700 border-t border-gray-50 transition-colors text-left">
+                      <div className="w-8 h-8 rounded-full bg-yellow-50 text-yellow-600 flex items-center justify-center"><Shield size={16} /></div> 
+                      Make Admin
+                    </button>
+                  )}
+                  {u.role !== 'owner' && (
+                    <button onClick={() => { deleteUser(u.id); setMenuOpen(false); }} className="w-full flex items-center gap-4 px-5 py-3.5 text-sm font-semibold text-red-600 hover:bg-red-50 border-t border-gray-50 transition-colors text-left">
+                      <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center"><Trash2 size={16} /></div> 
+                      Remove Account
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -586,10 +603,10 @@ const AdminDashboardPage: React.FC = () => {
                 <table className="w-full text-left text-sm border-collapse">
                   <thead>
                     <tr className="border-b border-gray-100 text-gray-400">
-                      <th className="py-4 font-semibold">User ID</th>
+                      <th className="py-4 font-semibold hidden md:table-cell">User ID</th>
                       <th className="py-4 font-semibold">Email</th>
                       <th className="py-4 font-semibold">Role</th>
-                      <th className="py-4 font-semibold">Status</th>
+                      <th className="py-4 font-semibold hidden md:table-cell">Status</th>
                       <th className="py-4 text-right font-semibold">Actions</th>
                     </tr>
                   </thead>
