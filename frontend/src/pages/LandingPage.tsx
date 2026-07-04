@@ -1,18 +1,39 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Star, Globe, Users, TrendingUp, Shield, BookOpen } from 'lucide-react';
 import Navbar from '../layouts/Navbar';
 import Footer from '../layouts/Footer';
 
+// ---- Animated count-up hook ----
+function useCountUp(target: number, duration = 2000, start = false) {
+  const [count, setCount] = React.useState(0);
+  useEffect(() => {
+    if (!start) return;
+    let startTime: number | null = null;
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // cubic ease-out
+      setCount(Math.floor(eased * target));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [start, target, duration]);
+  return count;
+}
+
 // ---- Stat counter card ----
-const StatCard: React.FC<{ value: string; label: string; delay: string }> = ({ value, label, delay }) => (
-  <div className={`text-center animate-fade-in-up ${delay}`} style={{ opacity: 0 }}>
-    <div className="text-4xl md:text-5xl font-black text-white mb-1" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-      {value}
+const StatCard: React.FC<{ target: number; suffix?: string; label: string; delay?: number; started: boolean }> = ({ target, suffix = '', label, delay = 0, started }) => {
+  const count = useCountUp(target, 2000, started);
+  return (
+    <div className="text-center" style={{ transitionDelay: `${delay}ms` }}>
+      <div className="text-4xl md:text-5xl font-black text-white mb-1" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+        {count.toLocaleString()}{suffix}
+      </div>
+      <div className="text-sm font-medium text-white/60 uppercase tracking-widest">{label}</div>
     </div>
-    <div className="text-sm font-medium text-white/60 uppercase tracking-widest">{label}</div>
-  </div>
-);
+  );
+};
 
 // ---- Feature Card ----
 const FeatureCard: React.FC<{
@@ -77,6 +98,36 @@ const Testimonial: React.FC<{ quote: string; name: string; role: string; initial
     </div>
   </div>
 );
+
+// ---- Stats Section with scroll-triggered animation ----
+const StatsSection: React.FC = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [started, setStarted] = React.useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setStarted(true); observer.disconnect(); } },
+      { threshold: 0.3 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section className="py-16 bg-[#F8F7F4]">
+      <div className="container-max">
+        <div
+          ref={ref}
+          className="bg-[#1B5442] rounded-3xl px-8 py-12 grid grid-cols-1 sm:grid-cols-3 gap-10 text-center divide-y sm:divide-y-0 sm:divide-x divide-white/10"
+        >
+          <StatCard target={100000} suffix="+" label="Views" delay={0} started={started} />
+          <StatCard target={3300} suffix="+" label="Followers" delay={200} started={started} />
+          <StatCard target={4} label="Live Sessions" delay={400} started={started} />
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const LandingPage: React.FC = () => {
   return (
@@ -151,15 +202,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* ============== STATS ============== */}
-      <section className="py-16 bg-[#F8F7F4]">
-        <div className="container-max">
-          <div className="bg-[#1B5442] rounded-3xl px-8 py-12 grid grid-cols-1 sm:grid-cols-3 gap-10 text-center divide-y sm:divide-y-0 sm:divide-x divide-white/10">
-            <StatCard value="100,000+" label="Views" delay="animate-delay-100" />
-            <StatCard value="3,300+" label="Followers" delay="animate-delay-200" />
-            <StatCard value="4" label="Live Sessions" delay="animate-delay-300" />
-          </div>
-        </div>
-      </section>
+      <StatsSection />
 
       {/* ============== FEATURES BENTO ============== */}
       <section id="features" className="section-pad bg-[#F8F7F4]">
