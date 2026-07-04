@@ -41,13 +41,14 @@ def update_my_profile(
 
 @router.get("/community", response_model=List[ProfileResponse])
 def get_community_profiles(db: Session = Depends(get_db)):
-    # Only return public profiles
     profiles = db.query(Profile).filter(Profile.privacy_level == "public").all()
     result = []
     for p in profiles:
         user = db.query(User).filter(User.id == p.user_id).first()
+        if not user:
+            continue # Skip orphaned profiles
         data = p.__dict__.copy()
-        data["accepted_programs"] = user.accepted_programs if user else []
+        data["accepted_programs"] = user.accepted_programs
         data["published_opportunities"] = db.query(Opportunity).filter(Opportunity.author_id == p.user_id, Opportunity.status == "approved").all()
         result.append(data)
     return result
