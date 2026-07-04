@@ -1,0 +1,5 @@
+# Force LF line endings for all text files on checkout
+* text=auto eol=lf
+
+# Explicitly force LF for requirements.txt
+backend/requirements.txt text eol=lf
