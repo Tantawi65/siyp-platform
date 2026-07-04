@@ -67,6 +67,7 @@ const CommunityPage: React.FC = () => {
   const [search, setSearch] = useState('');
   const [country, setCountry] = useState('');
   const [programFilter, setProgramFilter] = useState('');
+  const [sortBy, setSortBy] = useState('Most Accepted');
 
   React.useEffect(() => {
     fetch('/api/profiles/community')
@@ -81,7 +82,7 @@ const CommunityPage: React.FC = () => {
       });
   }, []);
 
-  const filtered = members.filter(m => {
+  let filtered = members.filter(m => {
     if (search) {
       const s = search.toLowerCase();
       const matchesName = (m.name || '').toLowerCase().includes(s);
@@ -92,6 +93,12 @@ const CommunityPage: React.FC = () => {
     if (programFilter && !(m.accepted_programs || []).some((p: any) => p.id.toString() === programFilter)) return false;
     return true;
   });
+
+  if (sortBy === 'Most Accepted') {
+    filtered = filtered.sort((a, b) => (b.accepted_programs?.length || 0) - (a.accepted_programs?.length || 0));
+  } else if (sortBy === 'Newest') {
+    filtered = filtered.sort((a, b) => b.id - a.id);
+  }
 
   const countries = [...new Set(members.map(m => m.country).filter(Boolean))].sort();
   
@@ -109,7 +116,7 @@ const CommunityPage: React.FC = () => {
   uniquePrograms.sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <div className="bg-[#F8F7F4] min-h-screen flex flex-col">
+    <div className="bg-[#F8F7F4] min-h-[101vh] flex flex-col">
       <Navbar />
 
       {/* Header */}
@@ -161,10 +168,13 @@ const CommunityPage: React.FC = () => {
           <p className="text-sm text-gray-500">
             Showing <span className="font-semibold text-[#1A1A2E]">{filtered.length}</span> members
           </p>
-          <select className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white outline-none">
-            <option>Most Accepted</option>
-            <option>Most Active</option>
-            <option>Newest Members</option>
+          <select 
+            value={sortBy}
+            onChange={e => setSortBy(e.target.value)}
+            className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white outline-none cursor-pointer"
+          >
+            <option value="Most Accepted">Most Accepted</option>
+            <option value="Newest">Newest</option>
           </select>
         </div>
 
