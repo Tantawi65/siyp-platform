@@ -117,7 +117,7 @@ const DashboardPage: React.FC = () => {
   };
 
   React.useEffect(() => {
-    fetch('/api/tracker/', {
+    fetch('/api/tracker', {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     })
       .then(res => res.ok ? res.json() : [])

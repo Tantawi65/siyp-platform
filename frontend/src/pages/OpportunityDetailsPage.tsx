@@ -53,7 +53,7 @@ const OpportunityDetailsPage: React.FC = () => {
 
     const token = localStorage.getItem('token');
     if (token) {
-      fetch('/api/tracker/', { headers: { 'Authorization': `Bearer ${token}` } })
+      fetch('/api/tracker', { headers: { 'Authorization': `Bearer ${token}` } })
         .then(res => res.ok ? res.json() : [])
         .then(data => {
           const savedItem = data.find((item: any) => item.opportunity.id === Number(id));
@@ -94,7 +94,7 @@ const OpportunityDetailsPage: React.FC = () => {
         if (res.ok) setTrackerId(null);
       } else {
         // Save
-        const res = await fetch('/api/tracker/', {
+        const res = await fetch('/api/tracker', {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ opportunity_id: opp.id, status: 'interested' })

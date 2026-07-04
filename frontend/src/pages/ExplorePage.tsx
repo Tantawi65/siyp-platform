@@ -158,7 +158,7 @@ const ExplorePage: React.FC = () => {
 
     const token = localStorage.getItem('token');
     if (token) {
-      fetch('/api/tracker/', { headers: { 'Authorization': `Bearer ${token}` } })
+      fetch('/api/tracker', { headers: { 'Authorization': `Bearer ${token}` } })
         .then(res => res.ok ? res.json() : [])
         .then(data => {
           if (Array.isArray(data)) {
@@ -192,7 +192,7 @@ const ExplorePage: React.FC = () => {
       }
     } else {
       // Save
-      const res = await fetch('/api/tracker/', {
+      const res = await fetch('/api/tracker', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ opportunity_id: oppId, status: 'interested' })

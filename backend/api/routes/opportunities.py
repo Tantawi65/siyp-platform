@@ -52,7 +52,7 @@ def create_tag(tag_in: TagCreate, db: Session = Depends(get_db), current_user: U
     return new_tag
 
 # --- Opportunities ---
-@router.get("/", response_model=List[OpportunityResponse])
+@router.get("", response_model=List[OpportunityResponse])
 def get_opportunities(
     db: Session = Depends(get_db),
     skip: int = 0,
@@ -98,7 +98,7 @@ def get_opportunity(id: int, db: Session = Depends(get_db)):
     
     return opportunity
 
-@router.post("/", response_model=OpportunityResponse)
+@router.post("", response_model=OpportunityResponse)
 def create_opportunity(
     opp_in: OpportunityCreate, 
     db: Session = Depends(get_db), 

@@ -11,7 +11,7 @@ from api.deps import get_current_user
 
 router = APIRouter()
 
-@router.get("/", response_model=List[SavedOpportunityResponse])
+@router.get("", response_model=List[SavedOpportunityResponse])
 def get_saved_opportunities(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     try:
         saved = db.query(SavedOpportunity).filter(SavedOpportunity.user_id == current_user.id).all()
@@ -23,7 +23,7 @@ def get_saved_opportunities(db: Session = Depends(get_db), current_user: User = 
         error_msg = f"{str(e)}\n{traceback.format_exc()}"
         raise HTTPException(status_code=500, detail=error_msg)
 
-@router.post("/", response_model=SavedOpportunityResponse)
+@router.post("", response_model=SavedOpportunityResponse)
 def save_opportunity(
     save_in: SavedOpportunityCreate, 
     db: Session = Depends(get_db), 
