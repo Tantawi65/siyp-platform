@@ -175,7 +175,7 @@ const DashboardPage: React.FC = () => {
           onMouseLeave={handleMouseLeave}
           onMouseUp={handleMouseUp}
           onMouseMove={handleMouseMove}
-          className={`flex flex-col lg:flex-row gap-6 lg:gap-5 overflow-visible lg:overflow-x-auto pb-4 lg:no-scrollbar flex-1 items-stretch lg:items-start ${isDragging ? 'cursor-grabbing select-none' : 'cursor-grab'}`}
+          className={`flex flex-col lg:flex-row gap-4 lg:gap-5 overflow-visible lg:overflow-x-auto pb-4 lg:no-scrollbar flex-1 items-stretch lg:items-start ${isDragging ? 'lg:cursor-grabbing select-none' : 'lg:cursor-grab'}`}
         >
           {COLUMNS.map(col => {
             const colCards = cards.filter(c => c.status === col.id);
@@ -191,7 +191,7 @@ const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* Cards */}
-                <div className="p-3 flex flex-col gap-3 flex-grow min-h-[300px]">
+                <div className="p-3 flex flex-col gap-3 flex-grow min-h-[120px] lg:min-h-[300px]">
                   {colCards.map(card => (
                     <ApplicationCard key={card.id} card={card} onMove={moveCard} onRemove={removeCard} />
                   ))}
