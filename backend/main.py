@@ -37,24 +37,17 @@ app.include_router(api_router, prefix="/api")
 @app.get("/api/fix-sequences")
 def fix_sequences(db: Session = Depends(get_db)):
     try:
-        db.execute(text("""
-        DO $$
-        DECLARE
-            r RECORD;
-        BEGIN
-            FOR r IN (
-                SELECT table_name, column_name
-                FROM information_schema.columns
-                WHERE table_schema = 'public' AND column_default LIKE 'nextval%'
-            ) LOOP
-                EXECUTE 'SELECT setval(pg_get_serial_sequence(''' || quote_ident(r.table_name) || ''', ''' || quote_ident(r.column_name) || '''), COALESCE(MAX(' || quote_ident(r.column_name) || '), 1) ) FROM ' || quote_ident(r.table_name);
-            END LOOP;
-        END $$;
-        """))
+        tables = ['users', 'profiles', 'opportunities', 'saved_opportunities', 'tags', 'categories', 'programs']
+        for table in tables:
+            db.execute(text(f"SELECT setval(pg_get_serial_sequence('{table}', 'id'), COALESCE(MAX(id), 1) ) FROM {table};"))
+        
         db.commit()
         return {"status": "success"}
     except Exception as e:
-        return {"status": "error", "detail": str(e)}
+        import traceback
+        error_msg = f"{str(e)}\n{traceback.format_exc()}"
+        from fastapi import HTTPException
+        raise HTTPException(status_code=500, detail=error_msg)
 
 # Uploads are now handled via Cloudinary, so local static file mounting is removed.
 
