@@ -37,7 +37,7 @@ app.include_router(api_router, prefix="/api")
 @app.get("/api/fix-sequences")
 def fix_sequences(db: Session = Depends(get_db)):
     try:
-        db.execute(text('''
+        db.execute(text("""
         DO $$
         DECLARE
             r RECORD;
@@ -50,7 +50,7 @@ def fix_sequences(db: Session = Depends(get_db)):
                 EXECUTE 'SELECT setval(pg_get_serial_sequence(''' || quote_ident(r.table_name) || ''', ''' || quote_ident(r.column_name) || '''), COALESCE(MAX(' || quote_ident(r.column_name) || '), 1) ) FROM ' || quote_ident(r.table_name);
             END LOOP;
         END $$;
-        '''))
+        """))
         db.commit()
         return {"status": "success"}
     except Exception as e:
