@@ -136,13 +136,14 @@ const ExplorePage: React.FC = () => {
   const { user } = useAuth();
   const isAdminOrOwner = user?.role === 'admin' || user?.role === 'owner';
 
-  const [opportunities, setOpportunities] = React.useState<Opportunity[]>([]);
-  const [trackerItems, setTrackerItems] = React.useState<Record<number, number>>({});
-  const [loading, setLoading] = React.useState(true);
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedFunding, setSelectedFunding] = useState<string[]>([]);
   const [country, setCountry] = useState('');
+  const [trackerItems, setTrackerItems] = useState<Record<number, number>>({});
+  const [sortBy, setSortBy] = useState('Newest First');
 
   React.useEffect(() => {
     fetch('/api/opportunities')
@@ -216,7 +217,7 @@ const ExplorePage: React.FC = () => {
   const clearAll = () => { setSearch(''); setSelectedTypes([]); setSelectedFunding([]); setCountry(''); };
   const hasFilters = selectedTypes.length > 0 || selectedFunding.length > 0 || country;
 
-  const filtered = opportunities.filter(opp => {
+  let filtered = opportunities.filter(opp => {
     if (search && !opp.title.toLowerCase().includes(search.toLowerCase()) &&
         !opp.organization.toLowerCase().includes(search.toLowerCase())) return false;
     if (selectedTypes.length > 0 && !selectedTypes.includes(opp.opportunity_type)) return false;
@@ -224,6 +225,18 @@ const ExplorePage: React.FC = () => {
     if (country && !opp.country.toLowerCase().includes(country.toLowerCase())) return false;
     return true;
   });
+
+  if (sortBy === 'Newest First') {
+    // Assuming higher ID or later published date means newer. We can use ID as proxy for newest if no published date is available,
+    // but usually opportunities are returned in ID order. We will sort by ID descending.
+    filtered = filtered.sort((a, b) => b.id - a.id);
+  } else if (sortBy === 'Deadline Soonest') {
+    filtered = filtered.sort((a, b) => {
+      if (!a.deadline) return 1;
+      if (!b.deadline) return -1;
+      return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+    });
+  }
 
   return (
     <div className="bg-[#F8F7F4] min-h-[101vh] flex flex-col">
@@ -278,16 +291,15 @@ const ExplorePage: React.FC = () => {
               <FilterSection title="Opportunity Type">
                 <div className="flex flex-col gap-2">
                   {TYPES.map(t => (
-                    <label key={t} className="flex items-center gap-2.5 cursor-pointer group">
-                      <input
-                        type="checkbox"
-                        checked={selectedTypes.includes(t)}
-                        onChange={() => toggleType(t)}
-                        className="w-4 h-4 rounded border-gray-300 accent-[#1B5442] cursor-pointer"
-                      />
-                      <span className={`text-sm transition-colors ${selectedTypes.includes(t) ? 'text-[#1B5442] font-semibold' : 'text-gray-600 group-hover:text-[#1B5442]'}`}>
-                        {t}
-                      </span>
+                    <label key={t} className="flex items-center gap-2 cursor-pointer group">
+                      <div className="relative flex items-center justify-center">
+                        <input type="checkbox" checked={selectedTypes.includes(t)} onChange={() => toggleType(t)}
+                          className="peer appearance-none w-4 h-4 border border-gray-300 rounded focus:ring-2 focus:ring-[#1B5442]/20 checked:bg-[#1B5442] checked:border-[#1B5442] transition-colors" />
+                        <svg className="absolute w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" viewBox="0 0 14 10" fill="none">
+                          <path d="M1 5L4.5 8.5L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </div>
+                      <span className="text-sm text-gray-600 group-hover:text-gray-900">{t}</span>
                     </label>
                   ))}
                 </div>
@@ -297,16 +309,15 @@ const ExplorePage: React.FC = () => {
               <FilterSection title="Funding">
                 <div className="flex flex-col gap-2">
                   {FUNDING_OPTIONS.map(f => (
-                    <label key={f} className="flex items-center gap-2.5 cursor-pointer group">
-                      <input
-                        type="checkbox"
-                        checked={selectedFunding.includes(f)}
-                        onChange={() => toggleFunding(f)}
-                        className="w-4 h-4 rounded border-gray-300 accent-[#1B5442] cursor-pointer"
-                      />
-                      <span className={`text-sm transition-colors ${selectedFunding.includes(f) ? 'text-[#1B5442] font-semibold' : 'text-gray-600 group-hover:text-[#1B5442]'}`}>
-                        {f}
-                      </span>
+                    <label key={f} className="flex items-center gap-2 cursor-pointer group">
+                      <div className="relative flex items-center justify-center">
+                        <input type="checkbox" checked={selectedFunding.includes(f)} onChange={() => toggleFunding(f)}
+                          className="peer appearance-none w-4 h-4 border border-gray-300 rounded focus:ring-2 focus:ring-[#1B5442]/20 checked:bg-[#1B5442] checked:border-[#1B5442] transition-colors" />
+                        <svg className="absolute w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" viewBox="0 0 14 10" fill="none">
+                          <path d="M1 5L4.5 8.5L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </div>
+                      <span className="text-sm text-gray-600 group-hover:text-gray-900">{f}</span>
                     </label>
                   ))}
                 </div>
@@ -364,10 +375,13 @@ const ExplorePage: React.FC = () => {
               </p>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-400">Sort:</span>
-                <select className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white outline-none focus:ring-2 focus:ring-[#1B5442]/20 cursor-pointer">
-                  <option>Newest First</option>
-                  <option>Deadline Soonest</option>
-                  <option>Most Relevant</option>
+                <select 
+                  value={sortBy} 
+                  onChange={e => setSortBy(e.target.value)} 
+                  className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white outline-none focus:ring-2 focus:ring-[#1B5442]/20 cursor-pointer"
+                >
+                  <option value="Newest First">Newest First</option>
+                  <option value="Deadline Soonest">Deadline Soonest</option>
                 </select>
               </div>
             </div>
