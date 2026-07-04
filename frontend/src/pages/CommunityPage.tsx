@@ -69,7 +69,7 @@ const CommunityPage: React.FC = () => {
   const [programFilter, setProgramFilter] = useState('');
 
   React.useEffect(() => {
-    fetch('/api/profiles/community')
+    fetch((import.meta.env.VITE_API_URL || '') + '/api/profiles/community')
       .then(res => res.json())
       .then(data => {
         setMembers(Array.isArray(data) ? data : []);

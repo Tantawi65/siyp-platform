@@ -40,7 +40,7 @@ const OpportunityDetailsPage: React.FC = () => {
     if (hasFetched.current) return;
     hasFetched.current = true;
     
-    fetch(`/api/opportunities/${id}`)
+    fetch((import.meta.env.VITE_API_URL || '') + `/api/opportunities/${id}`)
       .then(res => res.ok ? res.json() : null)
       .then(data => {
         setOpp(data);
@@ -53,7 +53,7 @@ const OpportunityDetailsPage: React.FC = () => {
 
     const token = localStorage.getItem('token');
     if (token) {
-      fetch('/api/tracker/', { headers: { 'Authorization': `Bearer ${token}` } })
+      fetch((import.meta.env.VITE_API_URL || '') + '/api/tracker/', { headers: { 'Authorization': `Bearer ${token}` } })
         .then(res => res.ok ? res.json() : [])
         .then(data => {
           const savedItem = data.find((item: any) => item.opportunity.id === Number(id));
@@ -87,14 +87,14 @@ const OpportunityDetailsPage: React.FC = () => {
       
       if (trackerId) {
         // Unsave
-        const res = await fetch(`/api/tracker/${trackerId}`, {
+        const res = await fetch((import.meta.env.VITE_API_URL || '') + `/api/tracker/${trackerId}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) setTrackerId(null);
       } else {
         // Save
-        const res = await fetch('/api/tracker/', {
+        const res = await fetch((import.meta.env.VITE_API_URL || '') + '/api/tracker/', {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ opportunity_id: opp.id, status: 'interested' })

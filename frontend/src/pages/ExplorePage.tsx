@@ -145,7 +145,7 @@ const ExplorePage: React.FC = () => {
   const [country, setCountry] = useState('');
 
   React.useEffect(() => {
-    fetch('/api/opportunities/')
+    fetch((import.meta.env.VITE_API_URL || '') + '/api/opportunities/')
       .then(res => res.json())
       .then(data => {
         setOpportunities(Array.isArray(data) ? data : []);
@@ -158,7 +158,7 @@ const ExplorePage: React.FC = () => {
 
     const token = localStorage.getItem('token');
     if (token) {
-      fetch('/api/tracker/', { headers: { 'Authorization': `Bearer ${token}` } })
+      fetch((import.meta.env.VITE_API_URL || '') + '/api/tracker/', { headers: { 'Authorization': `Bearer ${token}` } })
         .then(res => res.ok ? res.json() : [])
         .then(data => {
           if (Array.isArray(data)) {
@@ -179,7 +179,7 @@ const ExplorePage: React.FC = () => {
 
     if (trackerId) {
       // Unsave
-      const res = await fetch(`/api/tracker/${trackerId}`, {
+      const res = await fetch((import.meta.env.VITE_API_URL || '') + `/api/tracker/${trackerId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -192,7 +192,7 @@ const ExplorePage: React.FC = () => {
       }
     } else {
       // Save
-      const res = await fetch('/api/tracker/', {
+      const res = await fetch((import.meta.env.VITE_API_URL || '') + '/api/tracker/', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ opportunity_id: oppId, status: 'interested' })

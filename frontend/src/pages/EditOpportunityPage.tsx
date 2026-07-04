@@ -44,7 +44,7 @@ const EditOpportunityPage: React.FC = () => {
   const [success, setSuccess] = useState(false);
 
   React.useEffect(() => {
-    fetch(`/api/opportunities/${id}`)
+    fetch((import.meta.env.VITE_API_URL || '') + `/api/opportunities/${id}`)
       .then(res => res.ok ? res.json() : null)
       .then(data => {
         if (data) {
@@ -83,7 +83,7 @@ const EditOpportunityPage: React.FC = () => {
       let tag_ids: number[] = [];
       if (tagNames.length > 0) {
         // Fetch existing tags
-        const tagsRes = await fetch('/api/opportunities/tags');
+        const tagsRes = await fetch((import.meta.env.VITE_API_URL || '') + '/api/opportunities/tags');
         const existingTags = tagsRes.ok ? await tagsRes.json() : [];
         
         for (const tName of tagNames) {
@@ -92,7 +92,7 @@ const EditOpportunityPage: React.FC = () => {
             tag_ids.push(existing.id);
           } else if (isAdminOrOwner) {
             // Create new tag if admin
-            const createRes = await fetch('/api/opportunities/tags', {
+            const createRes = await fetch((import.meta.env.VITE_API_URL || '') + '/api/opportunities/tags', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
               body: JSON.stringify({ name: tName })
@@ -106,7 +106,7 @@ const EditOpportunityPage: React.FC = () => {
       }
 
       // 2. Submit opportunity
-      const res = await fetch(`/api/opportunities/${id}`, {
+      const res = await fetch((import.meta.env.VITE_API_URL || '') + `/api/opportunities/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
