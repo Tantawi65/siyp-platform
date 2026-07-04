@@ -412,7 +412,7 @@ const EditProfilePage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleRemoveProgram(prog.id)}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 text-gray-400 hover:text-red-500 rounded-md hover:bg-red-50"
+                          className="opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity p-1.5 text-gray-400 hover:text-red-500 rounded-md hover:bg-red-50"
                           title="Remove program"
                         >
                           <X size={16} />
