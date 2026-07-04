@@ -298,7 +298,7 @@ const EditProfilePage: React.FC = () => {
                   ) : (
                     <span className="text-white font-black text-3xl">{formData.name ? formData.name.charAt(0).toUpperCase() : 'U'}</span>
                   )}
-                  <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                     <span className="text-white text-xs font-semibold mt-1">Upload</span>
                   </div>
                   <input type="file" accept="image/*" onChange={handleAvatarUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
