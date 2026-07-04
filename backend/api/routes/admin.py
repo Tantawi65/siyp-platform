@@ -172,7 +172,12 @@ def delete_user(id: int, db: Session = Depends(get_db), current_owner: User = De
         
     # Manually delete related data to prevent ForeignKey constraint violations
     db.execute(user_accepted_programs.delete().where(user_accepted_programs.c.user_id == id))
-    db.query(Opportunity).filter(Opportunity.author_id == id).delete()
+    
+    # Reassign opportunities to the owner deleting the account instead of deleting them
+    opportunities = db.query(Opportunity).filter(Opportunity.author_id == id).all()
+    for opp in opportunities:
+        opp.author_id = current_owner.id
+        
     db.query(Profile).filter(Profile.user_id == id).delete()
     db.query(OpportunityTracker).filter(OpportunityTracker.user_id == id).delete()
     
