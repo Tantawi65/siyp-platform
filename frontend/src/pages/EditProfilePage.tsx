@@ -481,9 +481,12 @@ const EditProfilePage: React.FC = () => {
                           ? "Admin Privilege: This program will be instantly verified and added to the global catalog." 
                           : "This will be submitted to the admins for verification, but added to your profile immediately."}
                       </p>
-                      <input type="text" placeholder="Program Name" className="input-field py-2.5 text-sm bg-white" value={newProgram.name} onChange={e => setNewProgram({...newProgram, name: e.target.value})} />
-                      <input type="text" placeholder="Organization" className="input-field py-2.5 text-sm bg-white" value={newProgram.organization} onChange={e => setNewProgram({...newProgram, organization: e.target.value})} />
+                      <input type="text" placeholder="Program Name *" className={`input-field py-2.5 text-sm bg-white ${!newProgram.name ? 'border-red-200 focus:border-red-400 focus:ring-red-400/20' : ''}`} value={newProgram.name} onChange={e => setNewProgram({...newProgram, name: e.target.value})} />
+                      <input type="text" placeholder="Organization *" className={`input-field py-2.5 text-sm bg-white ${!newProgram.organization ? 'border-red-200 focus:border-red-400 focus:ring-red-400/20' : ''}`} value={newProgram.organization} onChange={e => setNewProgram({...newProgram, organization: e.target.value})} />
                       <input type="text" placeholder="Country (optional)" className="input-field py-2.5 text-sm bg-white" value={newProgram.country} onChange={e => setNewProgram({...newProgram, country: e.target.value})} />
+                      {(!newProgram.name || !newProgram.organization) && (
+                        <p className="text-xs text-red-500 font-medium -mt-1">* Program Name and Organization are required</p>
+                      )}
                     </div>
                   )}
 
