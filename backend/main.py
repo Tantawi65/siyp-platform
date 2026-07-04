@@ -10,13 +10,25 @@ import os
 # Alembic is used for migrations instead of create_all
 app = FastAPI(title="SIYP Team API")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # In production, specify the actual frontend origin
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+origins = os.getenv("ALLOWED_ORIGINS", "*").split(",")
+
+# If using wildcard, credentials must be disabled (browser security requirement)
+if origins == ["*"]:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=False,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+else:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 app.include_router(api_router, prefix="/api")
 
