@@ -3,10 +3,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from typing import List, Optional
 
-from backend.core.database import get_db
-from backend.models.opportunity import Opportunity, Category, Tag
-from backend.models.user import User
-from backend.schemas.opportunity import (
+from core.database import get_db
+from models.opportunity import Opportunity, Category, Tag
+from models.user import User
+from schemas.opportunity import (
     OpportunityCreate,
     OpportunityUpdate,
     OpportunityResponse,
@@ -15,7 +15,7 @@ from backend.schemas.opportunity import (
     TagCreate,
     TagResponse
 )
-from backend.api.deps import get_current_user, get_current_admin_user
+from api.deps import get_current_user, get_current_admin_user
 
 router = APIRouter()
 

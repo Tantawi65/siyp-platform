@@ -2,16 +2,16 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
-from backend.core.database import get_db
-from backend.models.user import User
-from backend.models.opportunity import Opportunity
-from backend.models.program import ProgramCatalog, user_accepted_programs
-from backend.schemas.user import UserResponse, UserCreate
-from backend.schemas.opportunity import OpportunityResponse
-from backend.schemas.profile import ProgramResponse
+from core.database import get_db
+from models.user import User
+from models.opportunity import Opportunity
+from models.program import ProgramCatalog, user_accepted_programs
+from schemas.user import UserResponse, UserCreate
+from schemas.opportunity import OpportunityResponse
+from schemas.profile import ProgramResponse
 from pydantic import BaseModel
-from backend.api.deps import get_current_admin_user, get_current_user
-from backend.core.security import get_password_hash
+from api.deps import get_current_admin_user, get_current_user
+from core.security import get_password_hash
 
 router = APIRouter()
 

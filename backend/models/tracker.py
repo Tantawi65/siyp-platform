@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
-from backend.core.database import Base
+from core.database import Base
 
 class SavedOpportunity(Base):
     __tablename__ = "saved_opportunities"

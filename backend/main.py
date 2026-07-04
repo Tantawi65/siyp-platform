@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.core.database import engine, Base
-from backend.models import user
+from core.database import engine, Base
+from models import user
 
-from backend.api.routes import api_router
+from api.routes import api_router
 from fastapi.staticfiles import StaticFiles
 import os
 

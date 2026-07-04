@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Table
 from sqlalchemy.orm import relationship
-from backend.core.database import Base
+from core.database import Base
 
 user_accepted_programs = Table(
     'user_accepted_programs',

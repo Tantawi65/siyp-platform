@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
-from backend.core.database import get_db
-from backend.models.user import User, Profile
-from backend.models.program import ProgramCatalog
-from backend.models.opportunity import Opportunity
-from backend.schemas.profile import ProfileUpdate, ProfileResponse, ProgramCreate, ProgramResponse
-from backend.api.deps import get_current_user, get_current_admin_user
+from core.database import get_db
+from models.user import User, Profile
+from models.program import ProgramCatalog
+from models.opportunity import Opportunity
+from schemas.profile import ProfileUpdate, ProfileResponse, ProgramCreate, ProgramResponse
+from api.deps import get_current_user, get_current_admin_user
 
 router = APIRouter()
 
@@ -161,7 +161,7 @@ def remove_accepted_program(
 import uuid
 import cloudinary
 import cloudinary.uploader
-from backend.core.config import settings
+from core.config import settings
 from fastapi import UploadFile, File
 
 cloudinary.config(

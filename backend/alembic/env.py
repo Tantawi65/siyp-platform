@@ -21,12 +21,12 @@ import sys
 # parent of backend is 3 dirs up
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from backend.core.database import Base
-from backend.models import user
-from backend.models import opportunity
-from backend.models import program
-from backend.models import tracker
-from backend.core.config import settings
+from core.database import Base
+from models import user
+from models import opportunity
+from models import program
+from models import tracker
+from core.config import settings
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

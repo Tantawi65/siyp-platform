@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from backend.api.routes import auth, opportunities, profiles, tracker, admin, password
+from api.routes import auth, opportunities, profiles, tracker, admin, password
 
 api_router = APIRouter()
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])

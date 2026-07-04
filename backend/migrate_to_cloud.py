@@ -13,11 +13,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 # Import all models to populate Base.metadata
-from backend.core.database import Base
-from backend.models.user import User, Profile
-from backend.models.program import ProgramCatalog, user_accepted_programs
-from backend.models.opportunity import Opportunity, Category, Tag, opportunity_tags
-from backend.models.tracker import SavedOpportunity
+from core.database import Base
+from models.user import User, Profile
+from models.program import ProgramCatalog, user_accepted_programs
+from models.opportunity import Opportunity, Category, Tag, opportunity_tags
+from models.tracker import SavedOpportunity
 
 # Setup Cloudinary
 cloudinary.config(

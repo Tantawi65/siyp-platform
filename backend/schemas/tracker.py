@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-from backend.schemas.opportunity import OpportunityResponse
+from schemas.opportunity import OpportunityResponse
 
 class SavedOpportunityBase(BaseModel):
     opportunity_id: int

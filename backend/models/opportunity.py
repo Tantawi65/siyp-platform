@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Table
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from backend.core.database import Base
-from backend.models.user import User
+from core.database import Base
+from models.user import User
 
 # Association table for opportunities and tags
 opportunity_tags = Table(

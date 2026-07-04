@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
-from backend.core.database import get_db
-from backend.models.user import User
-from backend.models.tracker import SavedOpportunity
-from backend.models.opportunity import Opportunity
-from backend.schemas.tracker import SavedOpportunityCreate, SavedOpportunityUpdate, SavedOpportunityResponse
-from backend.api.deps import get_current_user
+from core.database import get_db
+from models.user import User
+from models.tracker import SavedOpportunity
+from models.opportunity import Opportunity
+from schemas.tracker import SavedOpportunityCreate, SavedOpportunityUpdate, SavedOpportunityResponse
+from api.deps import get_current_user
 
 router = APIRouter()
 

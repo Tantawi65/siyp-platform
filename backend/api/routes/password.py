@@ -5,10 +5,10 @@ import resend
 import secrets
 from datetime import datetime, timedelta
 
-from backend.core.database import get_db
-from backend.core.config import settings
-from backend.core.security import get_password_hash
-from backend.models.user import User
+from core.database import get_db
+from core.config import settings
+from core.security import get_password_hash
+from models.user import User
 
 router = APIRouter()
 resend.api_key = settings.RESEND_API_KEY

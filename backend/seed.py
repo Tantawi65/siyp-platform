@@ -1,7 +1,7 @@
 import asyncio
-from backend.core.database import SessionLocal, engine, Base
-from backend.models.user import User, Profile
-from backend.core.security import get_password_hash
+from core.database import SessionLocal, engine, Base
+from models.user import User, Profile
+from core.security import get_password_hash
 
 def seed_owner():
     db = SessionLocal()
