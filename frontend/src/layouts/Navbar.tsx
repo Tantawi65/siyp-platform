@@ -146,6 +146,14 @@ const Navbar: React.FC = () => {
         </div>
       </nav>
 
+      {/* Mobile Menu Backdrop */}
+      <div 
+        className={`fixed inset-0 top-[72px] z-30 bg-black/20 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
+          mobileOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setMobileOpen(false)}
+      />
+
       {/* Mobile Menu */}
       <div
         className={`fixed inset-x-0 top-[72px] z-40 bg-white shadow-xl border-b border-gray-100 transition-all duration-300 md:hidden ${
