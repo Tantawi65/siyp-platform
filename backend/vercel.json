@@ -1,13 +1,15 @@
 {
   "version": 2,
-  "installCommand": "pip install -r deps.txt",
-  "functions": {
-    "main.py": {
-      "runtime": "python3.11",
-      "maxDuration": 30
+  "builds": [
+    {
+      "src": "main.py",
+      "use": "@vercel/python"
     }
-  },
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/main.py" }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "main.py"
+    }
   ]
 }
