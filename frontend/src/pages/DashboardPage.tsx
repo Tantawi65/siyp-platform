@@ -117,7 +117,7 @@ const DashboardPage: React.FC = () => {
   };
 
   React.useEffect(() => {
-    fetch((import.meta.env.VITE_API_URL || '') + '/api/tracker/', {
+    fetch('/api/tracker/', {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     })
       .then(res => res.ok ? res.json() : [])
@@ -130,7 +130,7 @@ const DashboardPage: React.FC = () => {
 
   const moveCard = (id: number, newStatus: string) => {
     setCards(prev => prev.map(c => c.id === id ? { ...c, status: newStatus } : c));
-    fetch((import.meta.env.VITE_API_URL || '') + `/api/tracker/${id}`, {
+    fetch(`/api/tracker/${id}`, {
       method: 'PUT',
       headers: { 
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -142,7 +142,7 @@ const DashboardPage: React.FC = () => {
 
   const removeCard = (id: number) => {
     setCards(prev => prev.filter(c => c.id !== id));
-    fetch((import.meta.env.VITE_API_URL || '') + `/api/tracker/${id}`, {
+    fetch(`/api/tracker/${id}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     }).catch(err => console.error('Failed to remove card:', err));

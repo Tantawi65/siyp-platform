@@ -59,7 +59,7 @@ const EditProfilePage: React.FC = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch((import.meta.env.VITE_API_URL || '') + '/api/profiles/me', {
+        const res = await fetch('/api/profiles/me', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -86,7 +86,7 @@ const EditProfilePage: React.FC = () => {
     
     const fetchPrograms = async () => {
       try {
-        const res = await fetch((import.meta.env.VITE_API_URL || '') + '/api/profiles/programs');
+        const res = await fetch('/api/profiles/programs');
         if (res.ok) {
           setAvailablePrograms(await res.json());
         }
@@ -111,7 +111,7 @@ const EditProfilePage: React.FC = () => {
     
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch((import.meta.env.VITE_API_URL || '') + '/api/profiles/me', {
+      const res = await fetch('/api/profiles/me', {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
@@ -143,7 +143,7 @@ const EditProfilePage: React.FC = () => {
     
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch((import.meta.env.VITE_API_URL || '') + '/api/profiles/me/avatar', {
+      const res = await fetch('/api/profiles/me/avatar', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: formData
@@ -165,7 +165,7 @@ const EditProfilePage: React.FC = () => {
   const handleRemoveAvatar = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch((import.meta.env.VITE_API_URL || '') + '/api/profiles/me/avatar', {
+      const res = await fetch('/api/profiles/me/avatar', {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -192,7 +192,7 @@ const EditProfilePage: React.FC = () => {
       let programId = selectedProgram;
       
       if (selectedProgram === 'other') {
-        const createRes = await fetch((import.meta.env.VITE_API_URL || '') + '/api/profiles/programs', {
+        const createRes = await fetch('/api/profiles/programs', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify(newProgram)
@@ -207,7 +207,7 @@ const EditProfilePage: React.FC = () => {
         }
       }
 
-      const addRes = await fetch((import.meta.env.VITE_API_URL || '') + `/api/profiles/me/programs/${programId}`, {
+      const addRes = await fetch(`/api/profiles/me/programs/${programId}`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -233,7 +233,7 @@ const EditProfilePage: React.FC = () => {
     setMessage({ text: '', type: '' });
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch((import.meta.env.VITE_API_URL || '') + `/api/profiles/me/programs/${programId}`, {
+      const res = await fetch(`/api/profiles/me/programs/${programId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

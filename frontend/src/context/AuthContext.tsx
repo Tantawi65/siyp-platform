@@ -31,7 +31,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Let's just trust the token and fetch user details if needed.
     const fetchProfile = async (storedUser: any) => {
       try {
-        const res = await fetch((import.meta.env.VITE_API_URL || '') + '/api/profiles/me', {
+        const res = await fetch('/api/profiles/me', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     formData.append('username', credentials.email);
     formData.append('password', credentials.password);
 
-    const res = await fetch((import.meta.env.VITE_API_URL || '') + '/api/auth/login', {
+    const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: formData,
@@ -83,7 +83,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     
     // Fetch profile right after login
     try {
-      const profileRes = await fetch((import.meta.env.VITE_API_URL || '') + '/api/profiles/me', {
+      const profileRes = await fetch('/api/profiles/me', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (profileRes.ok) {
@@ -99,7 +99,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const register = async (userData: any) => {
-    const res = await fetch((import.meta.env.VITE_API_URL || '') + '/api/auth/register', {
+    const res = await fetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData),

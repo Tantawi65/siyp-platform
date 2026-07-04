@@ -24,7 +24,7 @@ const PublicProfilePage: React.FC = () => {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    fetch((import.meta.env.VITE_API_URL || '') + `/api/profiles/${id}`)
+    fetch(`/api/profiles/${id}`)
       .then(res => res.ok ? res.json() : null)
       .then(data => {
         setProfile(data);

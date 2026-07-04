@@ -54,7 +54,7 @@ const PublishPage: React.FC = () => {
       let tag_ids: number[] = [];
       if (tagNames.length > 0) {
         // Fetch existing tags
-        const tagsRes = await fetch((import.meta.env.VITE_API_URL || '') + '/api/opportunities/tags');
+        const tagsRes = await fetch('/api/opportunities/tags');
         const existingTags = tagsRes.ok ? await tagsRes.json() : [];
         
         for (const tName of tagNames) {
@@ -63,7 +63,7 @@ const PublishPage: React.FC = () => {
             tag_ids.push(existing.id);
           } else if (isAdminOrOwner) {
             // Create new tag if admin
-            const createRes = await fetch((import.meta.env.VITE_API_URL || '') + '/api/opportunities/tags', {
+            const createRes = await fetch('/api/opportunities/tags', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
               body: JSON.stringify({ name: tName })
@@ -77,7 +77,7 @@ const PublishPage: React.FC = () => {
       }
 
       // 2. Submit opportunity
-      const res = await fetch((import.meta.env.VITE_API_URL || '') + '/api/opportunities/', {
+      const res = await fetch('/api/opportunities/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

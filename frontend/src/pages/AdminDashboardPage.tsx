@@ -48,20 +48,20 @@ const AdminDashboardPage: React.FC = () => {
         const token = localStorage.getItem('token');
         const headers = { 'Authorization': `Bearer ${token}` };
         
-        const resPending = await fetch((import.meta.env.VITE_API_URL || '') + '/api/admin/opportunities/pending', { headers });
+        const resPending = await fetch('/api/admin/opportunities/pending', { headers });
         if (resPending.ok) setPendingOpps(await resPending.json());
 
-        const resAll = await fetch((import.meta.env.VITE_API_URL || '') + '/api/admin/opportunities', { headers });
+        const resAll = await fetch('/api/admin/opportunities', { headers });
         if (resAll.ok) setAllOpps(await resAll.json());
 
         if (isOwner) {
-          const resAdmins = await fetch((import.meta.env.VITE_API_URL || '') + '/api/admin/admins', { headers });
+          const resAdmins = await fetch('/api/admin/admins', { headers });
           if (resAdmins.ok) setAdmins(await resAdmins.json());
           
-          const resAllUsers = await fetch((import.meta.env.VITE_API_URL || '') + '/api/admin/users', { headers });
+          const resAllUsers = await fetch('/api/admin/users', { headers });
           if (resAllUsers.ok) setAllUsers(await resAllUsers.json());
           
-          const resAllProgs = await fetch((import.meta.env.VITE_API_URL || '') + '/api/profiles/programs', { headers });
+          const resAllProgs = await fetch('/api/profiles/programs', { headers });
           if (resAllProgs.ok) {
             const progs = await resAllProgs.json();
             setPendingPrograms(progs); // we'll use pendingPrograms state for ALL programs now
@@ -79,7 +79,7 @@ const AdminDashboardPage: React.FC = () => {
 
   const approveOpp = async (id: number) => {
     try {
-      await fetch((import.meta.env.VITE_API_URL || '') + `/api/admin/opportunities/${id}/approve`, {
+      await fetch(`/api/admin/opportunities/${id}/approve`, {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
@@ -91,7 +91,7 @@ const AdminDashboardPage: React.FC = () => {
 
   const rejectOpp = async (id: number) => {
     try {
-      await fetch((import.meta.env.VITE_API_URL || '') + `/api/admin/opportunities/${id}/reject`, {
+      await fetch(`/api/admin/opportunities/${id}/reject`, {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
@@ -103,7 +103,7 @@ const AdminDashboardPage: React.FC = () => {
   const deleteOpp = async (id: number) => {
     if (!window.confirm("Are you sure you want to delete this opportunity?")) return;
     try {
-      await fetch((import.meta.env.VITE_API_URL || '') + `/api/admin/opportunities/${id}`, {
+      await fetch(`/api/admin/opportunities/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
@@ -114,7 +114,7 @@ const AdminDashboardPage: React.FC = () => {
 
   const approveProgram = async (id: number) => {
     try {
-      await fetch((import.meta.env.VITE_API_URL || '') + `/api/admin/programs/${id}/approve`, {
+      await fetch(`/api/admin/programs/${id}/approve`, {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
@@ -126,7 +126,7 @@ const AdminDashboardPage: React.FC = () => {
   const rejectProgram = async (id: number) => {
     if (!window.confirm("Rejecting will completely delete this program. Proceed?")) return;
     try {
-      await fetch((import.meta.env.VITE_API_URL || '') + `/api/admin/programs/${id}/reject`, {
+      await fetch(`/api/admin/programs/${id}/reject`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
@@ -143,7 +143,7 @@ const AdminDashboardPage: React.FC = () => {
   const mergeProgram = async () => {
     if (!programToMerge || !selectedMasterId) return;
     try {
-      await fetch((import.meta.env.VITE_API_URL || '') + `/api/admin/programs/${programToMerge.id}/merge`, {
+      await fetch(`/api/admin/programs/${programToMerge.id}/merge`, {
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -159,7 +159,7 @@ const AdminDashboardPage: React.FC = () => {
   const createProgram = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch((import.meta.env.VITE_API_URL || '') + `/api/profiles/programs`, {
+      const res = await fetch(`/api/profiles/programs`, {
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -182,7 +182,7 @@ const AdminDashboardPage: React.FC = () => {
   const makeAdmin = async (id: number) => {
     if (!window.confirm("Promote this user to Admin?")) return;
     try {
-      const res = await fetch((import.meta.env.VITE_API_URL || '') + `/api/admin/admins/${id}`, {
+      const res = await fetch(`/api/admin/admins/${id}`, {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
@@ -200,7 +200,7 @@ const AdminDashboardPage: React.FC = () => {
   const deleteUser = async (id: number) => {
     if (!window.confirm("Are you sure you want to permanently delete this user?")) return;
     try {
-      const res = await fetch((import.meta.env.VITE_API_URL || '') + `/api/admin/users/${id}`, {
+      const res = await fetch(`/api/admin/users/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
@@ -217,7 +217,7 @@ const AdminDashboardPage: React.FC = () => {
   const removeAdmin = async (id: number) => {
     if (!window.confirm("Remove this user's admin privileges?")) return;
     try {
-      const res = await fetch((import.meta.env.VITE_API_URL || '') + `/api/admin/admins/${id}`, {
+      const res = await fetch(`/api/admin/admins/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
