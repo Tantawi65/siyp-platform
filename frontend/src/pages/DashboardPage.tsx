@@ -159,7 +159,7 @@ const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      <main className="container-max py-8 flex-grow flex flex-col">
+      <main className="max-w-[1200px] mx-auto px-3 sm:px-6 py-8 flex-grow flex flex-col">
         {/* Top bar */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <p className="text-sm text-gray-500 font-medium">{cards.length} applications tracked</p>
