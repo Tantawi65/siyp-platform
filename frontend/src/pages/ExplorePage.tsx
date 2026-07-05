@@ -53,10 +53,10 @@ const FilterSection: React.FC<{ title: string; children: React.ReactNode }> = ({
 const OpportunityCard: React.FC<{ opp: Opportunity, isAdmin: boolean, trackerId: number | null, onToggleSave: (oppId: number, trackerId: number | null) => void }> = ({ opp, isAdmin, trackerId, onToggleSave }) => {
   const [saving, setSaving] = useState(false);
   const now = new Date().getTime();
-  const deadlineTime = new Date(opp.deadline).getTime();
-  const isClosed = deadlineTime < now;
-  const isUrgent = !isClosed && (deadlineTime - now < 14 * 24 * 60 * 60 * 1000);
-  const formattedDate = opp.deadline ? new Date(opp.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+  const deadlineTime = opp.deadline ? new Date(opp.deadline).getTime() : Infinity;
+  const isClosed = opp.deadline ? deadlineTime < now : false;
+  const isUrgent = opp.deadline ? !isClosed && (deadlineTime - now < 14 * 24 * 60 * 60 * 1000) : false;
+  const formattedDate = opp.deadline ? new Date(opp.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Rolling / Ongoing';
   
   const handleBookmarkClick = async () => {
     setSaving(true);

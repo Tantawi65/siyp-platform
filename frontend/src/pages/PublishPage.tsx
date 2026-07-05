@@ -38,6 +38,7 @@ const PublishPage: React.FC = () => {
 
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [isRolling, setIsRolling] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -107,6 +108,7 @@ const PublishPage: React.FC = () => {
           description: '', benefits: '', requirements: '',
           officialUrl: '', applyUrl: '', tags: '',
         });
+        setIsRolling(false);
         setTimeout(() => setSuccess(false), 5000);
       } else {
         const error = await res.json();
@@ -189,11 +191,20 @@ const PublishPage: React.FC = () => {
                   {FUNDING.map(f => <option key={f}>{f}</option>)}
                 </select>
               </Field>
-              <Field label="Application Deadline" required>
-                <div className="relative">
-                  <CalendarDays size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input type="date" name="deadline" value={form.deadline} onChange={handleChange}
-                    className="input-field pl-9" required />
+              <Field label="Application Deadline" required={!isRolling}>
+                <div className="flex flex-col gap-2.5 mt-1">
+                  <div className="relative">
+                    <CalendarDays size={15} className={`absolute left-3.5 top-1/2 -translate-y-1/2 ${isRolling ? 'text-gray-300' : 'text-gray-400'}`} />
+                    <input type="date" name="deadline" value={form.deadline} onChange={handleChange}
+                      className="input-field pl-9 disabled:opacity-50 disabled:bg-gray-100 disabled:cursor-not-allowed" required={!isRolling} disabled={isRolling} />
+                  </div>
+                  <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer w-fit select-none font-medium">
+                    <input type="checkbox" checked={isRolling} onChange={(e) => {
+                      setIsRolling(e.target.checked);
+                      if (e.target.checked) setForm(prev => ({...prev, deadline: ''}));
+                    }} className="rounded text-[#1B5442] focus:ring-[#1B5442] w-4 h-4 cursor-pointer" />
+                    Rolling Deadline (No fixed date)
+                  </label>
                 </div>
               </Field>
             </div>

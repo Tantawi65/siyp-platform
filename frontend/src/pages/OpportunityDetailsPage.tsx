@@ -117,7 +117,7 @@ const OpportunityDetailsPage: React.FC = () => {
 
   const formattedDate = opp?.deadline 
     ? new Date(opp.deadline).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
-    : '';
+    : 'Rolling / Ongoing';
 
   if (loading) {
     return (
@@ -158,10 +158,10 @@ const OpportunityDetailsPage: React.FC = () => {
               <div className="flex flex-wrap items-center gap-2 mb-4">
                 <span className="badge bg-[#E8A857] text-[#3D2800]">{opp.opportunity_type}</span>
                 <span className="badge bg-white/20 text-white/90">{opp.funding_type}</span>
-                {new Date(opp.deadline).getTime() < new Date().getTime() && (
+                {opp.deadline && new Date(opp.deadline).getTime() < new Date().getTime() && (
                   <span className="badge bg-gray-600 text-white">🔒 Closed</span>
                 )}
-                {new Date(opp.deadline).getTime() > new Date().getTime() && new Date(opp.deadline).getTime() - new Date().getTime() < 14 * 24 * 60 * 60 * 1000 && (
+                {opp.deadline && new Date(opp.deadline).getTime() > new Date().getTime() && new Date(opp.deadline).getTime() - new Date().getTime() < 14 * 24 * 60 * 60 * 1000 && (
                   <span className="badge bg-red-500/20 text-red-100 border border-red-500/30">🔥 Closing Soon</span>
                 )}
                 <span className="badge bg-white/10 text-white/70">{opp.views} Views</span>

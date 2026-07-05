@@ -48,7 +48,7 @@ const ApplicationCard: React.FC<{ card: SavedOpportunity; onMove: (id: number, s
   }, [menuOpen]);
 
   const opp = card.opportunity;
-  const formattedDate = opp.deadline ? new Date(opp.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+  const formattedDate = opp.deadline ? new Date(opp.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Rolling / Ongoing';
 
   return (
     <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex flex-col gap-3 hover:shadow-md hover:-translate-y-0.5 transition-all relative">
