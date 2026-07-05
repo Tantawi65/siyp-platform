@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     # Email
     RESEND_API_KEY: str = os.getenv("RESEND_API_KEY", "re_MRpeXf7m_FqKcTeJSBE5bX8fRhEPqAzQj")
     RESEND_FROM_EMAIL: str = os.getenv("RESEND_FROM_EMAIL", "SIYP Team <onboarding@resend.dev>")
-    FRONTEND_URL: str = "http://localhost:5173"
+    FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:5173")
     
     class Config:
         env_file = ".env"
