@@ -37,7 +37,7 @@ def forgot_password(request: ForgotPasswordRequest, db: Session = Depends(get_db
     reset_url = f"{settings.FRONTEND_URL}/reset-password?token={token}"
     try:
         resend.Emails.send({
-            "from": "SIYP Team <onboarding@resend.dev>",
+            "from": settings.RESEND_FROM_EMAIL,
             "to": [user.email],
             "subject": "Reset your SIYP Team password",
             "html": f"<p>Hello,</p><p>Click the link below to reset your password:</p><p><a href='{reset_url}'>{reset_url}</a></p><p>This link will expire in 1 hour.</p>"
