@@ -116,7 +116,7 @@ const OpportunityDetailsPage: React.FC = () => {
   };
 
   const formattedDate = opp?.deadline 
-    ? new Date(opp.deadline).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    ? new Date(opp.deadline).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Africa/Cairo' })
     : 'Rolling / Ongoing';
 
   if (loading) {
