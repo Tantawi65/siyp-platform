@@ -122,7 +122,7 @@ const StatsSection: React.FC = () => {
         >
           <StatCard target={100} suffix="K+" label="Views" delay={0} started={started} />
           <StatCard target={3300} suffix="+" label="Followers" delay={200} started={started} />
-          <StatCard target={4} label="Live Sessions" delay={400} started={started} />
+          <StatCard target={9} label="Live Sessions" delay={400} started={started} />
         </div>
       </div>
     </section>

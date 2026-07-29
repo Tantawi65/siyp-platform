@@ -182,7 +182,7 @@ const AboutUsPage: React.FC = () => {
             <StatItem value={3300} suffix="+" label="Facebook Followers" color="text-white" start={statsVisible} />
             <StatItem value={100} suffix="K+" label="Content Views" color="text-[#A8D5C4]" start={statsVisible} />
             <StatItem value={4} label="Org Partnerships" color="text-white" start={statsVisible} />
-            <StatItem value={4} label="Live Sessions" color="text-[#A8D5C4]" start={statsVisible} />
+            <StatItem value={9} label="Live Sessions" color="text-[#A8D5C4]" start={statsVisible} />
           </div>
         </div>
       </section>
