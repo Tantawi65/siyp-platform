@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, MapPin, Building2, Clock, X, Bookmark, ExternalLink, ChevronDown, ChevronUp, Edit3 } from 'lucide-react';
+import { Search, MapPin, Building2, Clock, X, Bookmark, ExternalLink, ChevronDown, ChevronUp, Edit3, Eye } from 'lucide-react';
 import Navbar from '../layouts/Navbar';
 import Footer from '../layouts/Footer';
 import { useAuth } from '../context/AuthContext';
@@ -10,7 +10,7 @@ interface Author { id: number; email: string; profile?: { name?: string }; }
 interface Opportunity {
   id: number; title: string; organization: string; country: string;
   opportunity_type: string; funding_type: string; deadline: string;
-  description: string; tags: Tag[]; author: Author;
+  description: string; tags: Tag[]; author: Author; views: number;
 }
 
 const TYPES = ['Scholarship', 'Fellowship', 'Internship', 'Conference', 'Volunteer', 'Grant', 'Competition'];
@@ -96,6 +96,7 @@ const OpportunityCard: React.FC<{ opp: Opportunity, isAdmin: boolean, trackerId:
         <span className="flex items-center gap-1.5"><Building2 size={13} /> {opp.organization}</span>
         <span className="flex items-center gap-1.5"><MapPin size={13} /> {opp.country}</span>
         <span className="flex items-center gap-1.5 text-red-500 font-medium"><Clock size={13} /> {formattedDate}</span>
+        <span className="flex items-center gap-1.5"><Eye size={13} /> {opp.views} views</span>
       </div>
 
       {/* Description */}
