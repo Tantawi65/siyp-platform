@@ -171,14 +171,20 @@ const AIMentorPage: React.FC = () => {
     return (
       <div className="bg-[#F8F7F4] min-h-screen flex flex-col items-center justify-center font-['Inter',sans-serif]">
         <Navbar />
-        <div className="flex flex-col items-center gap-6 animate-pulse mt-20">
-          <div className="w-20 h-20 rounded-2xl bg-white flex items-center justify-center shadow-2xl relative overflow-hidden transform rotate-3 border border-gray-100">
-            <div className="absolute inset-0 bg-white/40 animate-[spin_3s_linear_infinite] z-20 backdrop-blur-sm" style={{ clipPath: 'polygon(50% 50%, 100% 0, 100% 100%)' }}></div>
-            <img src="/logo.jpg" alt="SIYP AI" className="w-full h-full object-cover relative z-10" />
+        <div className="flex flex-col items-center gap-10 mt-24">
+          <div className="relative flex items-center justify-center">
+            {/* Radar Pulsing Rings */}
+            <div className="absolute w-28 h-28 bg-[#1B5442]/10 rounded-full animate-ping" style={{ animationDuration: '3s' }}></div>
+            <div className="absolute w-36 h-36 bg-[#1B5442]/5 rounded-full animate-ping" style={{ animationDuration: '3s', animationDelay: '1s' }}></div>
+            
+            {/* Solid Logo Container */}
+            <div className="w-20 h-20 bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] relative overflow-hidden border border-gray-100 z-10">
+              <img src="/logo.jpg" alt="SIYP AI" className="w-full h-full object-cover scale-110" />
+            </div>
           </div>
-          <div className="text-center">
-            <h2 className="text-xl font-bold text-[#1B5442] tracking-tight mb-2">SIYP AI is waking up...</h2>
-            <p className="text-sm text-gray-500 font-medium">Loading your personalized career workspace</p>
+          <div className="text-center animate-pulse">
+            <h2 className="text-2xl font-bold text-[#1B5442] tracking-tight mb-2">SIYP AI is waking up...</h2>
+            <p className="text-gray-500 font-medium">Loading your personalized career workspace</p>
           </div>
         </div>
       </div>
