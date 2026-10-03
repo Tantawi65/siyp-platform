@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Star, Globe, Users, TrendingUp, Shield, BookOpen } from 'lucide-react';
 import Navbar from '../layouts/Navbar';
 import Footer from '../layouts/Footer';
+import AIAppleShowcase from '../components/AIAppleShowcase';
 
 // ---- Animated count-up hook ----
 function useCountUp(target: number, duration = 2000, start = false) {
@@ -249,8 +250,11 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
+      {/* ============== APPLE-STYLE SCROLL SHOWCASE ============== */}
+      <AIAppleShowcase />
+
       {/* ============== HOW IT WORKS ============== */}
-      <section className="section-pad bg-white">
+      <section className="section-pad bg-[#F8F7F4]">
         <div className="container-max">
           <div className="text-center mb-14">
             <span className="badge badge-primary mb-4">Simple Process</span>
@@ -270,7 +274,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* ============== TESTIMONIALS ============== */}
-      <section className="section-pad bg-[#F8F7F4]">
+      <section className="section-pad bg-white">
         <div className="container-max">
           <div className="text-center mb-14">
             <span className="badge badge-primary mb-4">Community Voices</span>
@@ -305,7 +309,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* ============== CTA BANNER ============== */}
-      <section className="section-pad bg-white">
+      <section className="section-pad bg-[#F8F7F4]">
         <div className="container-max">
           <div className="bg-[#1B5442] rounded-3xl px-8 md:px-16 py-14 text-center relative overflow-hidden">
             <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
