@@ -283,7 +283,7 @@ const AIMentorPage: React.FC = () => {
       </main>
 
       {/* Fixed Bottom Input Area */}
-      <div className="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-xl border-t border-gray-100 pt-3 pb-6 px-4 z-40 shadow-[0_-10px_40px_rgba(0,0,0,0.03)] flex flex-col items-center">
+      <div className="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-xl border-t border-gray-100 pt-3 pb-6 px-4 z-20 shadow-[0_-10px_40px_rgba(0,0,0,0.03)] flex flex-col items-center">
         
         {/* Suggested Prompts Pill */}
         {messages.length > 1 && !isLoading && hasMore && messages[messages.length - 1].role === 'assistant' && (
