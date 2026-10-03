@@ -209,7 +209,7 @@ const LandingPage: React.FC = () => {
       <StatsSection />
 
       {/* ============== FEATURES BENTO ============== */}
-      <section id="features" className="section-pad bg-[#F8F7F4]">
+      <section id="features" className="section-pad bg-[#F8F7F4] overflow-x-hidden">
         <div className="container-max">
           <ScrollReveal>
             <div className="text-center mb-14">
