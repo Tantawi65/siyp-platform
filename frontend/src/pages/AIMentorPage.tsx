@@ -108,11 +108,11 @@ const AIMentorPage: React.FC = () => {
     }
   };
 
-  const handleSend = async (e?: React.FormEvent) => {
+  const handleSend = async (e?: React.FormEvent, overrideText?: string) => {
     if (e) e.preventDefault();
-    if (!inputValue.trim()) return;
+    const userText = overrideText || inputValue.trim();
+    if (!userText) return;
 
-    const userText = inputValue;
     setInputValue('');
     setMessages(prev => [...prev, { id: Date.now(), role: 'user', content: userText }]);
     setIsLoading(true);
@@ -174,7 +174,7 @@ const AIMentorPage: React.FC = () => {
       <Navbar />
 
       {/* Main Chat Area (Native Scroll) */}
-      <main className="flex-grow w-full max-w-4xl mx-auto px-4 sm:px-6 pt-28 pb-36 flex flex-col gap-6">
+      <main className="flex-grow w-full max-w-4xl mx-auto px-4 sm:px-6 pt-28 pb-48 flex flex-col gap-6">
         {messages.length === 1 && messages[0].id === 'welcome' && (
           <div className="flex justify-center my-8">
             <button 
@@ -241,8 +241,27 @@ const AIMentorPage: React.FC = () => {
       </main>
 
       {/* Fixed Bottom Input Area */}
-      <div className="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-xl border-t border-gray-100 pt-4 pb-6 px-4 z-40 shadow-[0_-10px_40px_rgba(0,0,0,0.03)]">
-        <div className="max-w-4xl mx-auto flex items-center gap-3">
+      <div className="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-xl border-t border-gray-100 pt-3 pb-6 px-4 z-40 shadow-[0_-10px_40px_rgba(0,0,0,0.03)] flex flex-col items-center">
+        
+        {/* Suggested Prompts Pill */}
+        {messages.length > 1 && !isLoading && messages[messages.length - 1].role === 'assistant' && (
+          <div className="max-w-4xl w-full flex gap-2 mb-3 overflow-x-auto pb-1 custom-scrollbar">
+            <button 
+              onClick={() => handleSend(undefined, "Show me more eligible opportunities")}
+              className="whitespace-nowrap px-4 py-2 bg-white border border-[#1B5442]/30 text-[#1B5442] text-xs font-semibold rounded-full shadow-sm hover:bg-[#1B5442]/5 hover:border-[#1B5442] transition-colors flex items-center gap-1.5"
+            >
+              Show me more eligible opportunities <Sparkles size={12} />
+            </button>
+            <button 
+              onClick={() => handleSend(undefined, "Can you review my skills and tell me what I am missing for these?")}
+              className="whitespace-nowrap px-4 py-2 bg-white border border-gray-200 text-gray-600 text-xs font-semibold rounded-full shadow-sm hover:bg-gray-50 hover:text-gray-900 transition-colors"
+            >
+              What skills am I missing? 💡
+            </button>
+          </div>
+        )}
+
+        <div className="max-w-4xl w-full flex items-center gap-3">
           <button 
             onClick={clearChat}
             title="Clear Chat History"
@@ -269,8 +288,8 @@ const AIMentorPage: React.FC = () => {
             </button>
           </form>
         </div>
-        <div className="text-center mt-3 max-w-4xl mx-auto">
-          <span className="text-xs text-gray-400 font-medium">AI recommendations can make mistakes. Always verify deadlines on the official opportunity page.</span>
+        <div className="text-center mt-3 max-w-4xl mx-auto w-full">
+          <span className="text-[11px] text-gray-400 font-medium">AI recommendations can make mistakes. Always verify deadlines on the official opportunity page.</span>
         </div>
       </div>
     </div>
