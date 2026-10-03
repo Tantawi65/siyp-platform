@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Bot, Send, Loader2, Sparkles, ArrowLeft } from 'lucide-react';
+import { Bot, Send, Loader2, Sparkles, ArrowLeft, Trash2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useAuth } from '../context/AuthContext';
@@ -172,34 +172,9 @@ const AIMentorPage: React.FC = () => {
   return (
     <div className="bg-white min-h-screen flex flex-col font-['Inter',sans-serif]">
       <Navbar />
-      
-      {/* Sleek Header */}
-      <div className="sticky top-[72px] z-30 bg-white/80 backdrop-blur-md border-b border-gray-100 py-3 px-4 shadow-sm">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link to="/dashboard" className="p-2 text-gray-500 hover:text-[#1B5442] hover:bg-gray-50 rounded-full transition-colors">
-              <ArrowLeft size={18} />
-            </Link>
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1B5442] to-[#143d30] flex items-center justify-center">
-              <Bot size={16} className="text-white" />
-            </div>
-            <div>
-              <h1 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                SIYP AI Mentor <Sparkles size={14} className="text-yellow-500" />
-              </h1>
-            </div>
-          </div>
-          <button 
-            onClick={clearChat}
-            className="text-xs font-medium text-gray-500 hover:text-red-600 px-3 py-1.5 rounded-full hover:bg-red-50 transition-colors border border-transparent hover:border-red-100"
-          >
-            Clear Chat
-          </button>
-        </div>
-      </div>
 
       {/* Main Chat Area (Native Scroll) */}
-      <main className="flex-grow w-full max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-36 flex flex-col gap-6">
+      <main className="flex-grow w-full max-w-4xl mx-auto px-4 sm:px-6 pt-28 pb-36 flex flex-col gap-6">
         {messages.length === 1 && messages[0].id === 'welcome' && (
           <div className="flex justify-center my-8">
             <button 
@@ -267,23 +242,33 @@ const AIMentorPage: React.FC = () => {
 
       {/* Fixed Bottom Input Area */}
       <div className="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-xl border-t border-gray-100 pt-4 pb-6 px-4 z-40 shadow-[0_-10px_40px_rgba(0,0,0,0.03)]">
-        <form onSubmit={handleSend} className="relative flex items-center max-w-4xl mx-auto">
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Ask your mentor about opportunities..."
-            className="w-full bg-[#F8F7F4] border border-gray-200 text-base rounded-full py-4 pl-6 pr-16 focus:outline-none focus:border-[#1B5442] focus:ring-4 focus:ring-[#1B5442]/10 transition-all shadow-inner"
-            disabled={isLoading}
-          />
+        <div className="max-w-4xl mx-auto flex items-center gap-3">
           <button 
-            type="submit" 
-            disabled={!inputValue.trim() || isLoading}
-            className={`absolute right-2 p-3.5 rounded-full transition-all duration-300 shadow-sm ${inputValue.trim() ? 'bg-[#1B5442] hover:bg-[#143d30] text-white hover:shadow-md transform hover:-translate-y-0.5' : 'bg-gray-200 text-gray-400'}`}
+            onClick={clearChat}
+            title="Clear Chat History"
+            className="p-4 rounded-full bg-gray-50 border border-gray-200 text-gray-400 hover:text-red-500 hover:bg-red-50 hover:border-red-100 transition-all shadow-sm shrink-0 flex items-center justify-center cursor-pointer"
           >
-            {isLoading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} className={inputValue.trim() ? 'translate-x-0.5' : ''} />}
+            <Trash2 size={20} />
           </button>
-        </form>
+          
+          <form onSubmit={handleSend} className="relative flex items-center flex-grow">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="Ask your mentor about opportunities..."
+              className="w-full bg-[#F8F7F4] border border-gray-200 text-base rounded-full py-4 pl-6 pr-16 focus:outline-none focus:border-[#1B5442] focus:ring-4 focus:ring-[#1B5442]/10 transition-all shadow-inner"
+              disabled={isLoading}
+            />
+            <button 
+              type="submit" 
+              disabled={!inputValue.trim() || isLoading}
+              className={`absolute right-2 p-3.5 rounded-full transition-all duration-300 shadow-sm ${inputValue.trim() ? 'bg-[#1B5442] hover:bg-[#143d30] text-white hover:shadow-md transform hover:-translate-y-0.5 cursor-pointer' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+            >
+              {isLoading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} className={inputValue.trim() ? 'translate-x-0.5' : ''} />}
+            </button>
+          </form>
+        </div>
         <div className="text-center mt-3 max-w-4xl mx-auto">
           <span className="text-xs text-gray-400 font-medium">AI recommendations can make mistakes. Always verify deadlines on the official opportunity page.</span>
         </div>
