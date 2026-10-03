@@ -123,9 +123,10 @@ def generate_recommendations(db: Session, user_id: int, page: int = 0):
     opps_ctx = f"Available Active Opportunities (Page {page + 1}):\\n"
     for opp in chunk:
         deadline_str = opp.deadline.strftime('%Y-%m-%d') if opp.deadline else "Rolling Deadline"
+        cat_name = opp.category.name if opp.category else "None"
         elig = opp.eligibility if opp.eligibility else "None"
         req = opp.requirements[:250].replace('\\n', ' ') if opp.requirements else "None"
-        opps_ctx += f"- ID: {opp.id} | Title: {opp.title} | Deadline: {deadline_str} | Eligibility: {elig} | Requirements: {req} | Link: /opportunities/{opp.id}\\n"
+        opps_ctx += f"- ID: {opp.id} | Category: {cat_name} | Title: {opp.title} | Deadline: {deadline_str} | Eligibility: {elig} | Requirements: {req} | Link: /opportunities/{opp.id}\\n"
 
     prompt = f"{profile_ctx}\\n\\n{opps_ctx}\\n\\nPlease analyze my profile against these specific opportunities. Provide personalized recommendations formatted EXACTLY as requested in your system instructions. Do not forget any details.\\n\\nCRITICAL: Before you output ANY tables, you MUST write a brief evaluation inside a <thinking> block to explicitly check my Education against each Opportunity's Eligibility/Requirements. If I am not strictly eligible, DO NOT include it."
     
@@ -175,9 +176,10 @@ def chat_with_ai(db: Session, user_id: int, user_message: str, page: int = 0):
     opps_ctx = f"Available SIYP Opportunities Database Chunk (Page {page + 1}):\\n"
     for opp in chunk:
         deadline_str = opp.deadline.strftime('%Y-%m-%d') if opp.deadline else "Rolling Deadline"
+        cat_name = opp.category.name if opp.category else "None"
         elig = opp.eligibility if opp.eligibility else "None"
         req = opp.requirements[:250].replace('\\n', ' ') if opp.requirements else "None"
-        opps_ctx += f"- ID: {opp.id} | Title: {opp.title} | Deadline: {deadline_str} | Eligibility: {elig} | Requirements: {req} | Link: /opportunities/{opp.id}\\n"
+        opps_ctx += f"- ID: {opp.id} | Category: {cat_name} | Title: {opp.title} | Deadline: {deadline_str} | Eligibility: {elig} | Requirements: {req} | Link: /opportunities/{opp.id}\\n"
 
     # 3. Get Context (Latest Recommendation + Chat History)
     history = db.query(AIChatHistory).filter(AIChatHistory.user_id == user_id).order_by(AIChatHistory.created_at.desc()).limit(10).all()
