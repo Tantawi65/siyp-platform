@@ -276,7 +276,7 @@ const LandingPage: React.FC = () => {
           </ScrollReveal>
           <div className="relative grid grid-cols-1 md:grid-cols-4 gap-8 mt-16">
             
-            {/* The Moving Energy Beam Line */}
+            {/* Desktop Horizontal Moving Energy Beam */}
             <div className="hidden md:block absolute top-7 left-[12%] right-[12%] h-[2px] bg-gray-200/80 z-0 overflow-hidden rounded-full">
               {/* Gold beam */}
               <div 
@@ -290,12 +290,32 @@ const LandingPage: React.FC = () => {
               />
             </div>
 
+            {/* Mobile Vertical Moving Energy Beam */}
+            <div className="md:hidden absolute top-7 bottom-[15%] left-1/2 -translate-x-1/2 w-[2px] bg-gray-200/80 z-0 overflow-hidden rounded-full">
+              {/* Gold beam */}
+              <div 
+                className="absolute left-0 w-full h-40 bg-gradient-to-b from-transparent via-[#E8A857] to-transparent shadow-[0_0_12px_#E8A857]"
+                style={{ animation: 'shooting-beam-vert 3s infinite cubic-bezier(0.4, 0, 0.2, 1)' }}
+              />
+              {/* Green follow beam */}
+              <div 
+                className="absolute left-0 w-full h-24 bg-gradient-to-b from-transparent via-[#1B5442] to-transparent shadow-[0_0_12px_#1B5442]"
+                style={{ animation: 'shooting-beam-vert 3s infinite cubic-bezier(0.4, 0, 0.2, 1)', animationDelay: '0.15s' }}
+              />
+            </div>
+
             <style>{`
               @keyframes shooting-beam {
                 0% { left: -20%; opacity: 0; }
                 10% { opacity: 1; }
                 90% { opacity: 1; }
                 100% { left: 100%; opacity: 0; }
+              }
+              @keyframes shooting-beam-vert {
+                0% { top: -20%; opacity: 0; }
+                10% { opacity: 1; }
+                90% { opacity: 1; }
+                100% { top: 100%; opacity: 0; }
               }
             `}</style>
 
