@@ -26,6 +26,15 @@ class ProfileBase(BaseModel):
     social_github: Optional[str] = None
     social_linkedin: Optional[str] = None
     social_instagram: Optional[str] = None
+    
+    # New AI fields
+    major: Optional[str] = None
+    education_level: Optional[str] = None
+    gpa: Optional[str] = None
+    skills: Optional[str] = None
+    interests: Optional[str] = None
+    languages: Optional[str] = None
+    date_of_birth: Optional[str] = None
 
 class ProfileUpdate(ProfileBase):
     pass

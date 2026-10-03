@@ -19,9 +19,12 @@ class Settings(BaseSettings):
     CLOUDINARY_API_SECRET: str = os.getenv("CLOUDINARY_API_SECRET", "")
     
     # Email
-    RESEND_API_KEY: str = os.getenv("RESEND_API_KEY", "re_MRpeXf7m_FqKcTeJSBE5bX8fRhEPqAzQj")
+    RESEND_API_KEY: str = os.getenv("RESEND_API_KEY", "")
     RESEND_FROM_EMAIL: str = os.getenv("RESEND_FROM_EMAIL", "SIYP Team <onboarding@resend.dev>")
     FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:5173")
+    
+    # AI (Groq)
+    GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
     
     class Config:
         env_file = ".env"

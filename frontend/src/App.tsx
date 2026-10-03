@@ -19,6 +19,7 @@ import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
 import AboutUsPage from './pages/AboutUsPage';
 import ScrollToTop from './components/ScrollToTop';
+import AIMentorChat from './components/AIMentorChat';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
         <Route path="/terms-of-service" element={<TermsOfServicePage />} />
         <Route path="/about" element={<AboutUsPage />} />
       </Routes>
+      <AIMentorChat />
     </Router>
     </AuthProvider>
   );

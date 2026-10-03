@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from api.routes import auth, opportunities, profiles, tracker, admin, password
+from api.routes import auth, opportunities, profiles, tracker, admin, password, ai
 
 api_router = APIRouter()
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
@@ -8,3 +8,4 @@ api_router.include_router(profiles.router, prefix="/profiles", tags=["profiles"]
 api_router.include_router(tracker.router, prefix="/tracker", tags=["tracker"])
 api_router.include_router(admin.router, prefix="/admin", tags=["admin"])
 api_router.include_router(password.router, prefix="/auth", tags=["password"])
+api_router.include_router(ai.router, prefix="/ai", tags=["ai"])

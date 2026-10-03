@@ -16,6 +16,13 @@ interface ProfileFormData {
   social_instagram: string;
   privacy_level: string;
   avatar_url?: string;
+  major: string;
+  education_level: string;
+  gpa: string;
+  skills: string;
+  interests: string;
+  languages: string;
+  date_of_birth: string;
 }
 
 const EditProfilePage: React.FC = () => {
@@ -32,7 +39,14 @@ const EditProfilePage: React.FC = () => {
     social_linkedin: '',
     social_instagram: '',
     privacy_level: 'public',
-    avatar_url: ''
+    avatar_url: '',
+    major: '',
+    education_level: '',
+    gpa: '',
+    skills: '',
+    interests: '',
+    languages: '',
+    date_of_birth: ''
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -74,7 +88,14 @@ const EditProfilePage: React.FC = () => {
             social_linkedin: data.social_linkedin || '',
             social_instagram: data.social_instagram || '',
             privacy_level: data.privacy_level || 'public',
-            avatar_url: data.avatar_url || ''
+            avatar_url: data.avatar_url || '',
+            major: data.major || '',
+            education_level: data.education_level || '',
+            gpa: data.gpa || '',
+            skills: data.skills || '',
+            interests: data.interests || '',
+            languages: data.languages || '',
+            date_of_birth: data.date_of_birth || ''
           });
           setAcceptedPrograms(data.accepted_programs || []);
         }
@@ -352,6 +373,63 @@ const EditProfilePage: React.FC = () => {
               <div>
                 <label className="block text-sm font-semibold text-[#1A1A2E] mb-1.5">Bio</label>
                 <textarea name="bio" value={formData.bio} onChange={handleChange} placeholder="Tell the community about your background and goals..." rows={4} className="input-field py-3 resize-y"></textarea>
+              </div>
+
+              <hr className="border-gray-100 my-2" />
+              
+              <div className="bg-gradient-to-br from-[#1B5442]/5 to-transparent p-6 rounded-2xl border border-[#1B5442]/10 relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-10">
+                  <Globe size={100} />
+                </div>
+                <h3 className="font-bold text-[#1B5442] text-lg mb-2 flex items-center gap-2" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                  <Award size={20} /> AI Mentor Profile
+                </h3>
+                <p className="text-sm text-gray-600 mb-6 max-w-xl">
+                  Fill this out accurately to allow our AI Mentor to automatically match you with the best opportunities and provide personalized advice.
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-[#1A1A2E] mb-1.5">Education Level</label>
+                    <select name="education_level" value={formData.education_level} onChange={handleChange} className="input-field bg-white cursor-pointer py-2.5 text-sm">
+                      <option value="">Select Level</option>
+                      <option value="High School">High School</option>
+                      <option value="Bachelor's Degree">Bachelor's Degree</option>
+                      <option value="Master's Degree">Master's Degree</option>
+                      <option value="PhD">PhD</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-[#1A1A2E] mb-1.5">Major / Field of Study</label>
+                    <input type="text" name="major" value={formData.major} onChange={handleChange} placeholder="e.g. Computer Science" className="input-field py-2.5 text-sm" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-[#1A1A2E] mb-1.5">GPA (Optional)</label>
+                    <input type="text" name="gpa" value={formData.gpa} onChange={handleChange} placeholder="e.g. 3.8/4.0" className="input-field py-2.5 text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-[#1A1A2E] mb-1.5">Date of Birth</label>
+                    <input type="date" name="date_of_birth" value={formData.date_of_birth} onChange={handleChange} className="input-field py-2.5 text-sm bg-white" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-[#1A1A2E] mb-1.5">Top Skills</label>
+                    <input type="text" name="skills" value={formData.skills} onChange={handleChange} placeholder="e.g. Python, Public Speaking" className="input-field py-2.5 text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-[#1A1A2E] mb-1.5">Key Interests</label>
+                    <input type="text" name="interests" value={formData.interests} onChange={handleChange} placeholder="e.g. AI, Climate Change" className="input-field py-2.5 text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-[#1A1A2E] mb-1.5">Languages</label>
+                    <input type="text" name="languages" value={formData.languages} onChange={handleChange} placeholder="e.g. English (C1), Arabic" className="input-field py-2.5 text-sm" />
+                  </div>
+                </div>
               </div>
 
               <hr className="border-gray-100 my-2" />

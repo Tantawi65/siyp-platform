@@ -26,6 +26,7 @@ from models import user
 from models import opportunity
 from models import program
 from models import tracker
+from models import ai
 from core.config import settings
 target_metadata = Base.metadata
 

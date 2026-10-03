@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from core.database import Base
 from sqlalchemy.orm import relationship
 
@@ -20,7 +20,7 @@ class Profile(Base):
     __tablename__ = "profiles"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, index=True, nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), index=True, nullable=False)
     name = Column(String)
     country = Column(String)
     university = Column(String)
@@ -30,3 +30,13 @@ class Profile(Base):
     social_github = Column(String)
     social_linkedin = Column(String)
     social_instagram = Column(String)
+    
+    # --- New fields for AI Recommendations ---
+    major = Column(String)           # e.g. "Computer Science"
+    education_level = Column(String) # e.g. "Bachelor", "Master", "High School"
+    gpa = Column(String)             # e.g. "3.5/4.0"
+    skills = Column(String)          # Comma-separated list
+    interests = Column(String)       # Comma-separated list
+    languages = Column(String)       # Comma-separated list
+    date_of_birth = Column(String)   # YYYY-MM-DD
+    # -----------------------------------------
