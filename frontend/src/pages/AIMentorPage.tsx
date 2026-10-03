@@ -151,8 +151,6 @@ const AIMentorPage: React.FC = () => {
     );
   }
 
-  }
-
   return (
     <div className="bg-[#F8F7F4] min-h-screen flex flex-col">
       <Navbar />
