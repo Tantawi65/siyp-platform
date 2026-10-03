@@ -69,7 +69,7 @@ const AIAppleShowcase: React.FC = () => {
   const glowOpacity = mapRange(progress, 0.75, 0.9, 0, 0.8);
 
   return (
-    <div ref={containerRef} className="relative bg-[#071A13]" style={{ height: '400vh' }}>
+    <div ref={containerRef} className="relative bg-[#071A13]" style={{ height: '250vh' }}>
       
       {/* Sticky Container */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center perspective-[1000px]">
@@ -85,25 +85,21 @@ const AIAppleShowcase: React.FC = () => {
 
         {/* Initial Title */}
         <div 
-          className="absolute top-1/4 left-0 w-full text-center px-4"
+          className="absolute top-[30%] left-0 w-full text-center px-4"
           style={{ 
             opacity: titleOpacity, 
             transform: `translateY(${titleY}px)`,
             pointerEvents: progress > 0.1 ? 'none' : 'auto'
           }}
         >
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-1.5 mb-6">
-            <Sparkles size={14} className="text-[#E8A857]" />
-            <span className="text-white/90 text-sm font-semibold tracking-wide">Introducing SIYP AI</span>
-          </div>
-          <h2 className="text-5xl md:text-7xl font-black text-white leading-tight" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-            Scroll to see<br />the magic happen.
+          <h2 className="text-5xl md:text-7xl font-black text-white" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+            Let AI do the work.
           </h2>
         </div>
 
         {/* The Chat Interface Window */}
         <div 
-          className="relative w-[90%] max-w-3xl rounded-2xl md:rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl overflow-hidden z-10"
+          className="relative w-[90%] max-w-4xl rounded-2xl md:rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl overflow-hidden z-10"
           style={{
             transform: `scale(${interfaceScale}) translateY(${interfaceY}px) rotateX(${interfaceRotateX}deg)`,
             transformOrigin: 'bottom center',
@@ -113,15 +109,14 @@ const AIAppleShowcase: React.FC = () => {
           {/* Mac-style Window Header */}
           <div className="flex items-center gap-3 px-4 py-3 border-b border-white/10 bg-black/20">
             <div className="flex gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
-              <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
-              <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
+              <div className="w-3 h-3 rounded-full bg-white/20"></div>
+              <div className="w-3 h-3 rounded-full bg-white/20"></div>
+              <div className="w-3 h-3 rounded-full bg-white/20"></div>
             </div>
-            <div className="flex-1 text-center text-xs font-medium text-white/50 font-mono">SIYP_AI_Mentor.exe</div>
           </div>
 
           {/* Chat Body */}
-          <div className="p-6 md:p-10 min-h-[400px] flex flex-col justify-start relative">
+          <div className="p-6 md:p-10 min-h-[360px] flex flex-col justify-start relative">
             
             {/* User Message */}
             <div 
@@ -131,28 +126,28 @@ const AIAppleShowcase: React.FC = () => {
                 transform: `translateX(${userMsgX}px)` 
               }}
             >
-              <div className="bg-[#1B5442] text-white rounded-2xl rounded-tr-sm px-6 py-4 shadow-lg max-w-[80%]">
-                <p className="text-base md:text-lg font-medium">
-                  I am a Computer Science student in Egypt. Find me 3 fully-funded fellowships I am eligible for right now.
+              <div className="bg-[#1B5442] text-white rounded-2xl rounded-tr-sm px-6 py-4 shadow-lg">
+                <p className="text-lg md:text-xl font-medium">
+                  Find me fully-funded fellowships.
                 </p>
               </div>
             </div>
 
-            {/* AI Scanning State */}
+            {/* AI Scanning State (Purely Visual) */}
             <div 
-              className="absolute left-6 md:left-10 top-[120px] md:top-[140px] flex items-center gap-4"
+              className="absolute left-6 md:left-10 top-[120px] md:top-[140px] flex flex-col gap-3 w-3/4 max-w-md"
               style={{ 
                 opacity: scanOpacity,
                 display: progress > 0.6 ? 'none' : 'flex'
               }}
             >
-              <div className="w-10 h-10 rounded-full bg-[#1B5442]/20 flex items-center justify-center animate-pulse border border-[#1B5442]/50">
-                <Search size={20} className="text-[#1B5442]" />
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-6 h-6 rounded-full bg-[#E8A857] animate-pulse"></div>
+                <div className="h-4 bg-white/20 rounded w-32 animate-pulse"></div>
               </div>
-              <div className="flex flex-col">
-                <span className="text-white/80 font-medium">Scanning 1,402 opportunities...</span>
-                <span className="text-white/40 text-sm">Filtering by: Computer Science, Egypt, Fully-Funded</span>
-              </div>
+              <div className="h-3 bg-white/10 rounded w-full animate-pulse delay-75"></div>
+              <div className="h-3 bg-white/10 rounded w-5/6 animate-pulse delay-150"></div>
+              <div className="h-3 bg-white/10 rounded w-4/6 animate-pulse delay-300"></div>
             </div>
 
             {/* AI Results */}
@@ -163,49 +158,25 @@ const AIAppleShowcase: React.FC = () => {
                 transform: `translateY(${resultsY}px)` 
               }}
             >
-              <div className="bg-white/10 border border-white/20 rounded-2xl rounded-tl-sm p-1 shadow-lg w-full max-w-[95%]">
+              <div className="w-full max-w-[95%]">
                 
-                {/* Result Header */}
-                <div className="flex items-center gap-3 px-5 py-4 border-b border-white/10">
-                  <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-[#E8A857]/50">
-                    <img src="/logo.jpg" alt="SIYP AI" className="w-full h-full object-cover" />
-                  </div>
-                  <div>
-                    <h4 className="text-white font-bold">SIYP AI Mentor</h4>
-                    <p className="text-[#E8A857] text-xs">Found 3 perfect matches</p>
-                  </div>
-                </div>
-
-                {/* The Markdown Table Representation */}
-                <div className="p-4 md:p-6">
-                  <p className="text-white/90 mb-4 text-sm md:text-base">
-                    Based on your profile, here are 3 fully-funded fellowships you are strictly eligible for:
-                  </p>
-                  
-                  <div className="overflow-hidden rounded-xl border border-white/15 bg-black/20">
-                    <div className="grid grid-cols-12 gap-4 px-4 py-3 border-b border-white/10 bg-[#1B5442]/30 text-white/70 text-xs font-semibold uppercase tracking-wider">
-                      <div className="col-span-6">Opportunity Name</div>
-                      <div className="col-span-3">Deadline</div>
-                      <div className="col-span-3 text-right">Link</div>
-                    </div>
-                    
-                    {[
-                      { name: 'TechBridge Global Fellowship', date: 'Oct 15, 2026', tag: 'Fully Funded' },
-                      { name: 'MENA Future Leaders', date: 'Nov 01, 2026', tag: 'Stipend Included' },
-                      { name: 'Cairo Innovators Grant', date: 'Rolling', tag: 'Travel Covered' },
-                    ].map((row, i) => (
-                      <div key={i} className="grid grid-cols-12 gap-4 px-4 py-4 border-b border-white/5 hover:bg-white/5 transition-colors items-center text-sm">
-                        <div className="col-span-6 text-white font-medium flex items-center gap-2">
-                          <CheckCircle2 size={16} className="text-[#2A7A60] shrink-0" />
-                          <span className="truncate">{row.name}</span>
-                        </div>
-                        <div className="col-span-3 text-white/60">{row.date}</div>
-                        <div className="col-span-3 text-right">
-                          <span className="text-[#E8A857] hover:underline cursor-pointer text-xs">Apply Now ↗</span>
-                        </div>
+                {/* The Visual Table Representation */}
+                <div className="overflow-hidden rounded-2xl border border-[#1B5442]/50 bg-black/40 shadow-2xl backdrop-blur-xl">
+                  {[
+                    { name: 'TechBridge Global Fellowship', tag: 'Fully Funded' },
+                    { name: 'MENA Future Leaders', tag: 'Stipend Included' },
+                    { name: 'Cairo Innovators Grant', tag: 'Travel Covered' },
+                  ].map((row, i) => (
+                    <div key={i} className="flex items-center justify-between px-6 py-5 border-b border-white/5 hover:bg-white/5 transition-colors">
+                      <div className="flex items-center gap-4">
+                        <CheckCircle2 size={24} className="text-[#2A7A60] shrink-0" />
+                        <span className="text-white text-lg font-medium">{row.name}</span>
                       </div>
-                    ))}
-                  </div>
+                      <span className="bg-[#E8A857]/20 text-[#E8A857] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                        {row.tag}
+                      </span>
+                    </div>
+                  ))}
                 </div>
                 
               </div>
