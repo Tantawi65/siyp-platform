@@ -151,130 +151,143 @@ const AIMentorPage: React.FC = () => {
     );
   }
 
+  const clearChat = async () => {
+    if (!confirm("Are you sure you want to clear your chat history?")) return;
+    try {
+      const token = localStorage.getItem('token');
+      await fetch('/api/ai/chat/history', {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMessages([{
+        id: 'welcome',
+        role: 'assistant',
+        content: `Hello ${user?.name || 'there'}! I'm your SIYP AI Mentor. I can help you find the best opportunities and prepare your applications. What are you looking for today?`
+      }]);
+    } catch (err) {
+      console.error('Failed to clear chat', err);
+    }
+  };
+
   return (
-    <div className="bg-[#F8F7F4] min-h-screen flex flex-col">
+    <div className="bg-white min-h-screen flex flex-col font-['Inter',sans-serif]">
       <Navbar />
       
-      <main className="container-max pt-24 pb-8 flex-grow flex flex-col h-[calc(100vh-20px)]">
-        <div className="flex-1 w-full max-w-5xl mx-auto bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden flex flex-col animate-fade-in-up">
-          
-          {/* Header */}
-          <div className="bg-gradient-to-r from-[#1B5442] to-[#143d30] p-6 text-white flex justify-between items-center shrink-0 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 animate-spin-slow"></div>
-            <div className="absolute bottom-0 left-0 w-40 h-40 bg-yellow-300/10 rounded-full blur-2xl translate-y-1/3 -translate-x-1/4"></div>
-            
-            <div className="flex items-center gap-4 relative z-10">
-              <Link to="/dashboard" className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors backdrop-blur-sm mr-2">
-                <ArrowLeft size={20} />
-              </Link>
-              <div className="bg-white/20 p-3 rounded-2xl backdrop-blur-md shadow-inner border border-white/10">
-                <Bot size={28} className="text-yellow-300" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-black tracking-wide font-['Plus_Jakarta_Sans'] flex items-center gap-2">
-                  SIYP AI Mentor <Sparkles size={18} className="text-yellow-300 animate-pulse" />
-                </h1>
-                <p className="text-sm text-green-100 flex items-center gap-1.5 opacity-90">
-                  <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> 
-                  Your personalized career and academic guide
-                </p>
-              </div>
+      {/* Sleek Header */}
+      <div className="sticky top-[72px] z-30 bg-white/80 backdrop-blur-md border-b border-gray-100 py-3 px-4 shadow-sm">
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link to="/dashboard" className="p-2 text-gray-500 hover:text-[#1B5442] hover:bg-gray-50 rounded-full transition-colors">
+              <ArrowLeft size={18} />
+            </Link>
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1B5442] to-[#143d30] flex items-center justify-center">
+              <Bot size={16} className="text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                SIYP AI Mentor <Sparkles size={14} className="text-yellow-500" />
+              </h1>
             </div>
           </div>
-
-          {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col gap-6 custom-scrollbar" style={{ backgroundColor: '#faf9f6' }}>
-            {messages.length === 1 && messages[0].id === 'welcome' && (
-              <div className="flex justify-center mb-6 mt-4">
-                <button 
-                  onClick={generateRecommendations}
-                  disabled={isLoading}
-                  className="group relative overflow-hidden bg-white hover:bg-gray-50 text-[#1B5442] text-sm font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl border border-[#1B5442]/10 transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-3"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#1B5442]/0 via-[#1B5442]/5 to-[#1B5442]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                  <Sparkles size={18} className="text-yellow-500" /> 
-                  Auto-Generate My Top Matches
-                </button>
-              </div>
-            )}
-
-            {messages.map((msg, idx) => (
-              <div 
-                key={idx} 
-                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up`}
-                style={{ animationFillMode: 'both' }}
-              >
-                {msg.role === 'assistant' && (
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1B5442] to-[#143d30] flex items-center justify-center shrink-0 mr-3 mt-1 shadow-md">
-                    <Bot size={16} className="text-white" />
-                  </div>
-                )}
-                
-                <div 
-                  className={`max-w-[95%] md:max-w-[85%] rounded-3xl p-5 shadow-sm text-[15px] ${
-                    msg.role === 'user' 
-                      ? 'bg-gradient-to-br from-[#1B5442] to-[#143d30] text-white rounded-tr-sm shadow-md' 
-                      : 'bg-white border border-gray-100 text-gray-800 rounded-tl-sm shadow-lg'
-                  }`}
-                >
-                  {msg.role === 'assistant' ? (
-                    <div className="prose prose-sm md:prose-base max-w-none text-gray-700">
-                      <ReactMarkdown 
-                        remarkPlugins={[remarkGfm]}
-                        components={MarkdownComponents}
-                      >
-                        {msg.content}
-                      </ReactMarkdown>
-                    </div>
-                  ) : (
-                    msg.content
-                  )}
-                </div>
-              </div>
-            ))}
-            
-            {isLoading && (
-              <div className="flex justify-start animate-fade-in-up mt-2">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1B5442] to-[#143d30] flex items-center justify-center shrink-0 mr-3 mt-1 shadow-md">
-                  <Bot size={16} className="text-white" />
-                </div>
-                <div className="bg-white border border-gray-100 rounded-3xl rounded-tl-sm p-5 shadow-lg flex items-center gap-3 h-14">
-                  <div className="flex gap-1.5">
-                    <div className="w-2.5 h-2.5 bg-[#1B5442]/40 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                    <div className="w-2.5 h-2.5 bg-[#1B5442]/70 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                    <div className="w-2.5 h-2.5 bg-[#1B5442] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} className="h-4" />
-          </div>
-
-          {/* Input Area */}
-          <div className="p-4 md:p-6 bg-white border-t border-gray-100 shrink-0 shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.05)] z-10">
-            <form onSubmit={handleSend} className="relative flex items-center max-w-4xl mx-auto">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Ask your mentor about specific opportunities, career paths, or advice..."
-                className="w-full bg-[#F8F7F4] border border-gray-200 text-base rounded-full py-4 pl-6 pr-16 focus:outline-none focus:border-[#1B5442] focus:ring-4 focus:ring-[#1B5442]/10 transition-all shadow-inner"
-                disabled={isLoading}
-              />
-              <button 
-                type="submit" 
-                disabled={!inputValue.trim() || isLoading}
-                className={`absolute right-2 p-3.5 rounded-full transition-all duration-300 shadow-md ${inputValue.trim() ? 'bg-[#1B5442] hover:bg-[#143d30] text-white hover:shadow-lg transform hover:-translate-y-0.5' : 'bg-gray-200 text-gray-400'}`}
-              >
-                {isLoading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} className={inputValue.trim() ? 'translate-x-0.5' : ''} />}
-              </button>
-            </form>
-            <div className="text-center mt-3">
-              <span className="text-xs text-gray-400 font-medium">AI recommendations can make mistakes. Always verify deadlines on the official opportunity page.</span>
-            </div>
-          </div>
+          <button 
+            onClick={clearChat}
+            className="text-xs font-medium text-gray-500 hover:text-red-600 px-3 py-1.5 rounded-full hover:bg-red-50 transition-colors border border-transparent hover:border-red-100"
+          >
+            Clear Chat
+          </button>
         </div>
+      </div>
+
+      {/* Main Chat Area (Native Scroll) */}
+      <main className="flex-grow w-full max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-36 flex flex-col gap-6">
+        {messages.length === 1 && messages[0].id === 'welcome' && (
+          <div className="flex justify-center my-8">
+            <button 
+              onClick={generateRecommendations}
+              disabled={isLoading}
+              className="group relative overflow-hidden bg-white text-[#1B5442] text-sm font-bold py-4 px-8 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:shadow-[0_8px_30px_rgb(27,84,66,0.15)] border border-[#1B5442]/10 transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-3"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-[#1B5442]/0 via-[#1B5442]/5 to-[#1B5442]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+              <Sparkles size={18} className="text-yellow-500" /> 
+              Auto-Generate My Top Matches
+            </button>
+          </div>
+        )}
+
+        {messages.map((msg, idx) => (
+          <div 
+            key={idx} 
+            className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up`}
+          >
+            {msg.role === 'assistant' && (
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1B5442] to-[#143d30] flex items-center justify-center shrink-0 mr-3 mt-1 shadow-sm hidden sm:flex">
+                <Bot size={16} className="text-white" />
+              </div>
+            )}
+            
+            <div 
+              className={`max-w-[95%] sm:max-w-[85%] rounded-3xl p-5 shadow-sm text-[15px] ${
+                msg.role === 'user' 
+                  ? 'bg-gradient-to-br from-[#1B5442] to-[#143d30] text-white rounded-tr-sm' 
+                  : 'bg-white border border-gray-100 text-gray-800 rounded-tl-sm shadow-md'
+              }`}
+            >
+              {msg.role === 'assistant' ? (
+                <div className="prose prose-sm sm:prose-base max-w-none text-gray-700">
+                  <ReactMarkdown 
+                    remarkPlugins={[remarkGfm]}
+                    components={MarkdownComponents}
+                  >
+                    {msg.content}
+                  </ReactMarkdown>
+                </div>
+              ) : (
+                msg.content
+              )}
+            </div>
+          </div>
+        ))}
+        
+        {isLoading && (
+          <div className="flex justify-start animate-fade-in-up">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1B5442] to-[#143d30] flex items-center justify-center shrink-0 mr-3 mt-1 shadow-sm hidden sm:flex">
+              <Bot size={16} className="text-white" />
+            </div>
+            <div className="bg-white border border-gray-100 rounded-3xl rounded-tl-sm p-5 shadow-md flex items-center gap-3 h-14">
+              <div className="flex gap-1.5">
+                <div className="w-2.5 h-2.5 bg-[#1B5442]/40 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                <div className="w-2.5 h-2.5 bg-[#1B5442]/70 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                <div className="w-2.5 h-2.5 bg-[#1B5442] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+              </div>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
       </main>
+
+      {/* Fixed Bottom Input Area */}
+      <div className="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-xl border-t border-gray-100 pt-4 pb-6 px-4 z-40 shadow-[0_-10px_40px_rgba(0,0,0,0.03)]">
+        <form onSubmit={handleSend} className="relative flex items-center max-w-4xl mx-auto">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Ask your mentor about opportunities..."
+            className="w-full bg-[#F8F7F4] border border-gray-200 text-base rounded-full py-4 pl-6 pr-16 focus:outline-none focus:border-[#1B5442] focus:ring-4 focus:ring-[#1B5442]/10 transition-all shadow-inner"
+            disabled={isLoading}
+          />
+          <button 
+            type="submit" 
+            disabled={!inputValue.trim() || isLoading}
+            className={`absolute right-2 p-3.5 rounded-full transition-all duration-300 shadow-sm ${inputValue.trim() ? 'bg-[#1B5442] hover:bg-[#143d30] text-white hover:shadow-md transform hover:-translate-y-0.5' : 'bg-gray-200 text-gray-400'}`}
+          >
+            {isLoading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} className={inputValue.trim() ? 'translate-x-0.5' : ''} />}
+          </button>
+        </form>
+        <div className="text-center mt-3 max-w-4xl mx-auto">
+          <span className="text-xs text-gray-400 font-medium">AI recommendations can make mistakes. Always verify deadlines on the official opportunity page.</span>
+        </div>
+      </div>
     </div>
   );
 };

@@ -47,3 +47,12 @@ def get_chat_history(db: Session = Depends(get_db), current_user: User = Depends
     """
     history = db.query(AIChatHistory).filter(AIChatHistory.user_id == current_user.id).order_by(AIChatHistory.created_at.asc()).all()
     return history
+
+@router.delete("/chat/history")
+def clear_chat_history(db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+    """
+    Clears the user's AI chat history.
+    """
+    db.query(AIChatHistory).filter(AIChatHistory.user_id == current_user.id).delete()
+    db.commit()
+    return {"message": "Chat history cleared"}
