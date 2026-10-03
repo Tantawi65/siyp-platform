@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 interface ScrollRevealProps {
   children: React.ReactNode;
-  animation?: 'fade-up' | 'fade-left' | 'fade-right' | 'scale' | 'zoom-in';
+  animation?: 'fade-up' | 'fade-left' | 'fade-right' | 'scale' | 'zoom-in' | 'expand-x';
   delay?: number;
   duration?: number;
   threshold?: number;
@@ -42,14 +42,15 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
     };
   }, [threshold]);
 
-  const getTransform = () => {
-    if (isVisible) return 'translate(0, 0) scale(1)';
+    const getTransform = () => {
+    if (isVisible) return 'translate(0, 0) scale(1) scaleX(1)';
     switch (animation) {
       case 'fade-up': return 'translateY(40px)';
       case 'fade-left': return 'translateX(40px)';
       case 'fade-right': return 'translateX(-40px)';
       case 'scale': return 'scale(0.95)';
       case 'zoom-in': return 'scale(0.85) translateY(20px)';
+      case 'expand-x': return 'scaleX(0)';
       default: return 'translateY(40px)';
     }
   };

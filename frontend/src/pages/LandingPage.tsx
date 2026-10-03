@@ -145,8 +145,8 @@ const LandingPage: React.FC = () => {
       >
         {/* Dot grid overlay */}
         <div className="absolute inset-0 dot-grid pointer-events-none" />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#2A7A60]/30 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[#E8A857]/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#2A7A60]/30 rounded-full blur-3xl pointer-events-none animate-float" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[#E8A857]/20 rounded-full blur-3xl pointer-events-none animate-pulse-ring" style={{ animationDuration: '6s' }} />
 
         <div className="container-max relative z-10 py-24 text-center">
           {/* Live badge */}
@@ -274,8 +274,11 @@ const LandingPage: React.FC = () => {
               <p className="text-gray-500">Four simple steps to your next big opportunity.</p>
             </div>
           </ScrollReveal>
-          <div className="relative grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="hidden md:block absolute top-7 left-[15%] right-[15%] h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+          <div className="relative grid grid-cols-1 md:grid-cols-4 gap-8 mt-16">
+            <ScrollReveal animation="expand-x" duration={1500} className="hidden md:block absolute top-7 left-[12%] right-[12%] origin-left h-1 z-0">
+              <div className="w-full h-full bg-gradient-to-r from-gray-200 via-[#E8A857] to-gray-200 rounded-full" />
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-[#E8A857] to-transparent animate-pulse-ring rounded-full opacity-50 blur-sm" />
+            </ScrollReveal>
             <ScrollReveal delay={100} animation="zoom-in"><Step num={1} title="Create Account" desc="Sign up free and set up your profile in minutes." active /></ScrollReveal>
             <ScrollReveal delay={250} animation="zoom-in"><Step num={2} title="Explore" desc="Browse curated opportunities tailored to your goals." /></ScrollReveal>
             <ScrollReveal delay={400} animation="zoom-in"><Step num={3} title="Apply" desc="Use our tracker to organise and submit applications." /></ScrollReveal>
