@@ -125,7 +125,7 @@ def generate_recommendations(db: Session, user_id: int, page: int = 0):
         deadline_str = opp.deadline.strftime('%Y-%m-%d') if opp.deadline else "Rolling Deadline"
         opps_ctx += f"- ID: {opp.id} | Title: {opp.title} | Deadline: {deadline_str} | Country: {opp.country} | Eligibility: {opp.eligibility} | Link: /opportunities/{opp.id}\\n"
 
-    prompt = f"{profile_ctx}\\n\\n{opps_ctx}\\n\\nPlease analyze the user's profile against these specific opportunities. Provide personalized recommendations formatted EXACTLY as requested in your system instructions. Do not forget any details."
+    prompt = f"{profile_ctx}\\n\\n{opps_ctx}\\n\\nPlease analyze my profile against these specific opportunities. Provide personalized recommendations formatted EXACTLY as requested in your system instructions. Do not forget any details.\\n\\nCRITICAL: Before you output ANY tables, you MUST write a brief evaluation inside a <thinking> block to explicitly check my Education against each Opportunity's Eligibility. If I am not strictly eligible, DO NOT include it."
     
     # 6. Call API
     ai_response = _call_groq_api([{"role": "user", "content": prompt}])
@@ -176,22 +176,19 @@ def chat_with_ai(db: Session, user_id: int, user_message: str, page: int = 0):
         opps_ctx += f"- ID: {opp.id} | Title: {opp.title} | Deadline: {deadline_str} | Country: {opp.country} | Eligibility: {opp.eligibility} | Link: /opportunities/{opp.id}\\n"
 
     # 3. Get Context (Latest Recommendation + Chat History)
-    latest_rec = db.query(AIRecommendation).filter(AIRecommendation.user_id == user_id).order_by(AIRecommendation.created_at.desc()).first()
     history = db.query(AIChatHistory).filter(AIChatHistory.user_id == user_id).order_by(AIChatHistory.created_at.desc()).limit(10).all()
     history.reverse() # Oldest to newest
     
     messages = []
     # Force the AI to only use SIYP DB and strictly format tables
-    system_instruction = f"CRITICAL INSTRUCTION: You must ONLY recommend opportunities from the following SIYP Database snippet. NEVER invent or suggest outside opportunities.\\nWhen generating a table, you must include exactly these columns (Opportunity Name, Deadline, Link) and fill them entirely. NEVER draw an empty table if a category has no opportunities.\\n\\nCRITICAL: You MUST write a <thinking> block to evaluate eligibility against the user's Education before generating the table.\\n\\n{opps_ctx}\\n\\n{profile_ctx}"
+    system_instruction = f"CRITICAL INSTRUCTION: You must ONLY recommend opportunities from the following SIYP Database snippet. NEVER invent or suggest outside opportunities.\\nWhen generating a table, you must include exactly these columns (Opportunity Name, Deadline, Link) and fill them entirely. NEVER draw an empty table if a category has no opportunities.\\n\\n{opps_ctx}\\n\\n{profile_ctx}"
     messages.append({"role": "system", "content": system_instruction})
-    
-    if latest_rec:
-        messages.append({"role": "system", "content": f"Context: The user previously received this recommendation from you:\\n{latest_rec.raw_recommendation[:500]}..."})
         
     for msg in history:
         messages.append({"role": msg.role, "content": msg.content})
         
-    messages.append({"role": "user", "content": user_message})
+    user_prompt = f"{user_message}\\n\\nCRITICAL: Before you output ANY tables, you MUST write a brief evaluation inside a <thinking> block to explicitly check my Education against each Opportunity's Eligibility. If I am not strictly eligible, DO NOT include it."
+    messages.append({"role": "user", "content": user_prompt})
     
     # 4. Call API
     ai_response = _call_groq_api(messages)
