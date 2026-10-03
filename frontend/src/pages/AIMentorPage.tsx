@@ -79,7 +79,7 @@ const AIMentorPage: React.FC = () => {
             {
               id: 'welcome',
               role: 'assistant',
-              content: `Hello ${user?.name || 'there'}! I'm your SIYP AI Mentor. I can help you find the best opportunities and prepare your applications. What are you looking for today?`
+              content: `Hello ${user?.name || 'there'}! I'm your SIYP AI Mentor. I can help you find the best opportunities and prepare your applications.\n\n*Note: To give you the best recommendations, I analyze opportunities in batches. Simply click **"Show me more"** after my response to view the next set!*\n\nWhat are you looking for today?`
             }
           ]);
         }
@@ -171,7 +171,7 @@ const AIMentorPage: React.FC = () => {
       setMessages([{
         id: 'welcome',
         role: 'assistant',
-        content: `Hello ${user?.name || 'there'}! I'm your SIYP AI Mentor. I can help you find the best opportunities and prepare your applications. What are you looking for today?`
+        content: `Hello ${user?.name || 'there'}! I'm your SIYP AI Mentor. I can help you find the best opportunities and prepare your applications.\n\n*Note: To give you the best recommendations, I analyze opportunities in batches. Simply click **"Show me more"** after my response to view the next set!*\n\nWhat are you looking for today?`
       }]);
       setPage(0);
       setHasMore(false);
@@ -294,11 +294,7 @@ const AIMentorPage: React.FC = () => {
           </form>
         </div>
         <div className="text-center mt-3 max-w-4xl mx-auto w-full">
-          <span className="text-[11px] text-gray-400 font-medium">
-            AI recommendations can make mistakes. Always verify deadlines on the official opportunity page. <br className="sm:hidden" />
-            <span className="hidden sm:inline"> | </span> 
-            To prevent system overload, opportunities are processed in batches. Use the "Show me more" button above to view the next batch.
-          </span>
+          <span className="text-[11px] text-gray-400 font-medium">AI recommendations can make mistakes. Always verify deadlines on the official opportunity page.</span>
         </div>
       </div>
     </div>
