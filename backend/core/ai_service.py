@@ -19,7 +19,7 @@ Do not mention that you are an AI made by Groq, OpenAI, or Google. You work excl
 
 CRITICAL INSTRUCTIONS FOR FORMATTING RECOMMENDATIONS:
 1. When recommending opportunities to the user, you MUST output a Markdown table.
-2. You must STRICTLY separate them into two headers: "Fixed Deadlines" and "Rolling Deadlines".
+2. If there are Fixed Deadlines, draw a "Fixed Deadlines" table. If there are Rolling Deadlines, draw a "Rolling Deadlines" table. NEVER draw an empty table. If a category has no opportunities, do not mention it.
 3. The tables MUST have EXACTLY these THREE columns: [Opportunity Name, Deadline, Link].
 4. Do NOT include Match Score, Missing Skills, or any other columns.
 5. NEVER leave any column blank. If you do not have the exact details for an opportunity, DO NOT include it in the table.
@@ -47,7 +47,11 @@ def _call_groq_api(messages: list) -> str:
     if response.status_code != 200:
         raise HTTPException(status_code=502, detail=f"AI Service Error: {response.text}")
         
-    return response.json()['choices'][0]['message']['content']
+    content = response.json()['choices'][0]['message'].get('content', '')
+    if not content or not content.strip():
+        return "I'm sorry, I couldn't generate a proper response for this batch. Could you try asking me differently or checking the next set of opportunities?"
+        
+    return content
 
 def check_rate_limit(db: Session, user_id: int) -> AIUsageLog:
     today_str = datetime.utcnow().strftime("%Y-%m-%d")
@@ -165,7 +169,7 @@ def chat_with_ai(db: Session, user_id: int, user_message: str, page: int = 0):
     
     messages = []
     # Force the AI to only use SIYP DB and strictly format tables
-    system_instruction = f"CRITICAL INSTRUCTION: You must ONLY recommend opportunities from the following SIYP Database snippet. NEVER invent or suggest outside opportunities.\\nWhen generating a table, you must include exactly these columns (Opportunity Name, Deadline, Link) and fill them entirely.\\n\\n{opps_ctx}\\n\\n{profile_ctx}"
+    system_instruction = f"CRITICAL INSTRUCTION: You must ONLY recommend opportunities from the following SIYP Database snippet. NEVER invent or suggest outside opportunities.\\nWhen generating a table, you must include exactly these columns (Opportunity Name, Deadline, Link) and fill them entirely. NEVER draw an empty table if a category has no opportunities.\\n\\n{opps_ctx}\\n\\n{profile_ctx}"
     messages.append({"role": "system", "content": system_instruction})
     
     if latest_rec:
