@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Compass, Users, BookOpen, ChevronDown } from 'lucide-react';
+import { Menu, X, Compass, Users, BookOpen, ChevronDown, Bot } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar: React.FC = () => {
@@ -23,6 +23,7 @@ const Navbar: React.FC = () => {
     { to: '/explore', label: 'Discover', icon: <Compass size={15} /> },
     { to: '/community', label: 'Community', icon: <Users size={15} /> },
     { to: '/publish', label: 'Publish', icon: <BookOpen size={15} /> },
+    { to: '/ai-mentor', label: 'AI Mentor', icon: <Bot size={15} /> },
   ];
 
   const isActive = (path: string) => location.pathname === path;

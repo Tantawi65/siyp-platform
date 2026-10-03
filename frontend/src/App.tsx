@@ -19,7 +19,7 @@ import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
 import AboutUsPage from './pages/AboutUsPage';
 import ScrollToTop from './components/ScrollToTop';
-import AIMentorChat from './components/AIMentorChat';
+import AIMentorPage from './pages/AIMentorPage';
 
 function App() {
   return (
@@ -44,8 +44,8 @@ function App() {
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="/terms-of-service" element={<TermsOfServicePage />} />
         <Route path="/about" element={<AboutUsPage />} />
+        <Route path="/ai-mentor" element={<ProtectedRoute><AIMentorPage /></ProtectedRoute>} />
       </Routes>
-      <AIMentorChat />
     </Router>
     </AuthProvider>
   );
