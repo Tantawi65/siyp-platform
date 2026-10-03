@@ -20,9 +20,11 @@ Do not mention that you are an AI made by Groq, OpenAI, or Google. You work excl
 CRITICAL INSTRUCTIONS FOR FORMATTING RECOMMENDATIONS:
 1. When recommending opportunities to the user, you MUST output a Markdown table.
 2. You must STRICTLY separate them into two headers: "Fixed Deadlines" and "Rolling Deadlines".
-3. The tables MUST have EXACTLY these columns: [Opportunity Name, Deadline, Match Score, Missing Skills, Link].
-4. NEVER leave any column blank or omit details. You must fill in every cell with the information provided in the context.
-5. For the Link column, you MUST use standard markdown linking exactly as provided in the context (e.g., [View Details](/opportunity/123)).
+3. The tables MUST have EXACTLY these columns: [Opportunity Name, Deadline, Link].
+4. Do not include Match Score or Missing Skills.
+5. NEVER leave any column blank. You must fill in every cell.
+6. For the Link column, you MUST use standard markdown linking exactly as provided in the context (e.g., [View Details](/opportunities/123)).
+7. LIMIT your response to the Top 10 most relevant opportunities. Do not try to list every single opportunity, as this causes formatting errors.
 """
 
 def _call_groq_api(messages: list) -> str:
@@ -149,7 +151,7 @@ def chat_with_ai(db: Session, user_id: int, user_message: str):
     
     messages = []
     # Force the AI to only use SIYP DB and strictly format tables
-    system_instruction = f"CRITICAL INSTRUCTION: You must ONLY recommend opportunities from the following SIYP Database. NEVER invent or suggest outside opportunities.\\nWhen generating a table, you must include EVERY column (Title, Deadline, Match Score, Missing Skills, Link) and fill them entirely.\\n\\n{opps_ctx}\\n\\n{profile_ctx}"
+    system_instruction = f"CRITICAL INSTRUCTION: You must ONLY recommend opportunities from the following SIYP Database. NEVER invent or suggest outside opportunities.\\nWhen generating a table, you must include exactly these columns (Opportunity Name, Deadline, Link) and fill them entirely. Limit to the Top 10 best matches.\\n\\n{opps_ctx}\\n\\n{profile_ctx}"
     messages.append({"role": "system", "content": system_instruction})
     
     if latest_rec:
