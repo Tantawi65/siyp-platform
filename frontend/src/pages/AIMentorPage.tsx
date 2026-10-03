@@ -12,6 +12,32 @@ interface Message {
   content: string;
 }
 
+// Custom Markdown Components for high-end styling
+const MarkdownComponents = {
+  table: ({node, ...props}: any) => (
+    <div className="w-full overflow-x-auto rounded-xl shadow-md border border-[#1B5442]/10 my-6 bg-white animate-fade-in-up" style={{ animationDuration: '0.6s' }}>
+      <table className="w-full text-sm text-left text-gray-700" {...props} />
+    </div>
+  ),
+  thead: ({node, ...props}: any) => <thead className="text-xs text-white uppercase bg-gradient-to-r from-[#1B5442] to-[#143d30]" {...props} />,
+  th: ({node, ...props}: any) => <th className="px-6 py-4 font-bold tracking-wider" {...props} />,
+  tbody: ({node, ...props}: any) => <tbody className="divide-y divide-gray-100" {...props} />,
+  tr: ({node, ...props}: any) => <tr className="hover:bg-[#1B5442]/5 transition-colors duration-200" {...props} />,
+  td: ({node, ...props}: any) => <td className="px-6 py-4 align-middle" {...props} />,
+  a: ({node, ...props}: any) => (
+    <a 
+      className="inline-flex items-center gap-1 font-semibold text-[#1B5442] hover:text-[#143d30] transition-colors border-b border-[#1B5442]/30 hover:border-[#1B5442]" 
+      {...props} 
+    />
+  ),
+  h1: ({node, ...props}: any) => <h1 className="text-xl font-bold text-[#1B5442] mt-4 mb-2" {...props} />,
+  h2: ({node, ...props}: any) => <h2 className="text-lg font-bold text-[#1A1A2E] mt-4 mb-2" {...props} />,
+  h3: ({node, ...props}: any) => <h3 className="text-md font-bold text-[#1A1A2E] mt-3 mb-2" {...props} />,
+  p: ({node, ...props}: any) => <p className="mb-3 leading-relaxed" {...props} />,
+  ul: ({node, ...props}: any) => <ul className="list-disc pl-5 mb-3 space-y-1" {...props} />,
+  li: ({node, ...props}: any) => <li className="" {...props} />
+};
+
 const AIMentorPage: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -125,31 +151,7 @@ const AIMentorPage: React.FC = () => {
     );
   }
 
-  // Custom Markdown Components for high-end styling
-  const MarkdownComponents = {
-    table: ({node, ...props}: any) => (
-      <div className="w-full overflow-x-auto rounded-xl shadow-md border border-[#1B5442]/10 my-6 bg-white animate-fade-in-up" style={{ animationDuration: '0.6s' }}>
-        <table className="w-full text-sm text-left text-gray-700" {...props} />
-      </div>
-    ),
-    thead: ({node, ...props}: any) => <thead className="text-xs text-white uppercase bg-gradient-to-r from-[#1B5442] to-[#143d30]" {...props} />,
-    th: ({node, ...props}: any) => <th className="px-6 py-4 font-bold tracking-wider" {...props} />,
-    tbody: ({node, ...props}: any) => <tbody className="divide-y divide-gray-100" {...props} />,
-    tr: ({node, ...props}: any) => <tr className="hover:bg-[#1B5442]/5 transition-colors duration-200" {...props} />,
-    td: ({node, ...props}: any) => <td className="px-6 py-4 align-middle" {...props} />,
-    a: ({node, ...props}: any) => (
-      <a 
-        className="inline-flex items-center gap-1 font-semibold text-[#1B5442] hover:text-[#143d30] transition-colors border-b border-[#1B5442]/30 hover:border-[#1B5442]" 
-        {...props} 
-      />
-    ),
-    h1: ({node, ...props}: any) => <h1 className="text-xl font-bold text-[#1B5442] mt-4 mb-2" {...props} />,
-    h2: ({node, ...props}: any) => <h2 className="text-lg font-bold text-[#1A1A2E] mt-4 mb-2" {...props} />,
-    h3: ({node, ...props}: any) => <h3 className="text-md font-bold text-[#1A1A2E] mt-3 mb-2" {...props} />,
-    p: ({node, ...props}: any) => <p className="mb-3 leading-relaxed" {...props} />,
-    ul: ({node, ...props}: any) => <ul className="list-disc pl-5 mb-3 space-y-1" {...props} />,
-    li: ({node, ...props}: any) => <li className="" {...props} />
-  };
+  }
 
   return (
     <div className="bg-[#F8F7F4] min-h-screen flex flex-col">

@@ -111,12 +111,38 @@ def chat_with_ai(db: Session, user_id: int, user_message: str):
     # 1. Check rate limit
     usage = check_rate_limit(db, user_id)
     
-    # 2. Get Context (Latest Recommendation + Chat History)
+    # 2. Get User Profile and Live Opportunities
+    user = db.query(User).filter(User.id == user_id).first()
+    profile = user.profile
+    
+    now = datetime.utcnow()
+    active_opps = db.query(Opportunity).filter(
+        Opportunity.status == "approved",
+        or_(
+            Opportunity.deadline >= now,
+            Opportunity.deadline == None
+        )
+    ).all()
+    
+    profile_ctx = "User Profile:\\nNot fully configured."
+    if profile:
+        profile_ctx = f"User Profile:\\nMajor: {profile.major}\\nEducation: {profile.education_level}\\nGPA: {profile.gpa}\\nSkills: {profile.skills}\\nInterests: {profile.interests}\\nLanguages: {profile.languages}"
+        
+    opps_ctx = "Available SIYP Opportunities Database (ONLY RECOMMEND FROM THIS LIST):\\n"
+    for opp in active_opps:
+        deadline_str = opp.deadline.strftime('%Y-%m-%d') if opp.deadline else "Rolling Deadline"
+        opps_ctx += f"- ID: {opp.id} | Title: {opp.title} | Deadline: {deadline_str} | Country: {opp.country} | Eligibility: {opp.eligibility} | Link: /opportunity/{opp.id}\\n"
+
+    # 3. Get Context (Latest Recommendation + Chat History)
     latest_rec = db.query(AIRecommendation).filter(AIRecommendation.user_id == user_id).order_by(AIRecommendation.created_at.desc()).first()
     history = db.query(AIChatHistory).filter(AIChatHistory.user_id == user_id).order_by(AIChatHistory.created_at.desc()).limit(10).all()
     history.reverse() # Oldest to newest
     
     messages = []
+    # Force the AI to only use SIYP DB
+    system_instruction = f"CRITICAL INSTRUCTION: You must ONLY recommend opportunities from the following SIYP Database. NEVER invent or suggest outside opportunities.\\n\\n{opps_ctx}\\n\\n{profile_ctx}"
+    messages.append({"role": "system", "content": system_instruction})
+    
     if latest_rec:
         messages.append({"role": "system", "content": f"Context: The user previously received this recommendation from you:\\n{latest_rec.raw_recommendation}"})
         
@@ -125,10 +151,10 @@ def chat_with_ai(db: Session, user_id: int, user_message: str):
         
     messages.append({"role": "user", "content": user_message})
     
-    # 3. Call API
+    # 4. Call API
     ai_response = _call_groq_api(messages)
     
-    # 4. Save Chat History
+    # 5. Save Chat History
     user_chat = AIChatHistory(user_id=user_id, role="user", content=user_message)
     ai_chat = AIChatHistory(user_id=user_id, role="assistant", content=ai_response)
     db.add(user_chat)
