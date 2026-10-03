@@ -15,6 +15,12 @@ router = APIRouter()
 @router.get("/me", response_model=ProfileResponse)
 def get_my_profile(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     profile = db.query(Profile).filter(Profile.user_id == current_user.id).first()
+    if not profile:
+        profile = Profile(user_id=current_user.id, name=current_user.email.split('@')[0])
+        db.add(profile)
+        db.commit()
+        db.refresh(profile)
+        
     response_data = profile.__dict__.copy()
     response_data["accepted_programs"] = current_user.accepted_programs
     response_data["published_opportunities"] = db.query(Opportunity).filter(Opportunity.author_id == current_user.id).all()
@@ -27,7 +33,10 @@ def update_my_profile(
     current_user: User = Depends(get_current_user)
 ):
     profile = db.query(Profile).filter(Profile.user_id == current_user.id).first()
-    
+    if not profile:
+        profile = Profile(user_id=current_user.id, name=current_user.email.split('@')[0])
+        db.add(profile)
+        
     update_data = profile_in.dict(exclude_unset=True)
     for key, value in update_data.items():
         setattr(profile, key, value)
