@@ -44,6 +44,7 @@ const AIMentorPage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetchingHistory, setIsFetchingHistory] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [page, setPage] = useState(0);
@@ -72,7 +73,7 @@ const AIMentorPage: React.FC = () => {
     };
 
     try {
-      setIsLoading(true);
+      setIsFetchingHistory(true);
       const token = localStorage.getItem('token');
       const res = await fetch('/api/ai/chat/history', {
         headers: { Authorization: `Bearer ${token}` }
@@ -91,7 +92,7 @@ const AIMentorPage: React.FC = () => {
       console.error('Failed to fetch chat history', err);
       setMessages([welcomeMsg]);
     } finally {
-      setIsLoading(false);
+      setIsFetchingHistory(false);
     }
   };
 
@@ -166,6 +167,24 @@ const AIMentorPage: React.FC = () => {
     );
   }
 
+  if (isFetchingHistory) {
+    return (
+      <div className="bg-[#F8F7F4] min-h-screen flex flex-col items-center justify-center font-['Inter',sans-serif]">
+        <Navbar />
+        <div className="flex flex-col items-center gap-6 animate-pulse mt-20">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#1B5442] to-[#143d30] flex items-center justify-center shadow-2xl relative overflow-hidden transform rotate-3">
+            <div className="absolute inset-0 bg-white/10 animate-[spin_4s_linear_infinite]" style={{ clipPath: 'polygon(50% 50%, 100% 0, 100% 100%)' }}></div>
+            <span className="text-white text-2xl font-black tracking-tighter relative z-10">SIYP</span>
+          </div>
+          <div className="text-center">
+            <h2 className="text-xl font-bold text-[#1B5442] tracking-tight mb-2">SIYP AI is waking up...</h2>
+            <p className="text-sm text-gray-500 font-medium">Loading your personalized career workspace</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const clearChat = async () => {
     if (!confirm("Are you sure you want to clear your chat history?")) return;
     try {
@@ -213,7 +232,7 @@ const AIMentorPage: React.FC = () => {
           >
             {msg.role === 'assistant' && (
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1B5442] to-[#143d30] flex items-center justify-center shrink-0 mr-3 mt-1 shadow-sm hidden sm:flex">
-                <Bot size={16} className="text-white" />
+                <span className="text-white text-[10px] font-black tracking-tighter">SIYP</span>
               </div>
             )}
             
@@ -243,7 +262,7 @@ const AIMentorPage: React.FC = () => {
         {isLoading && (
           <div className="flex justify-start animate-fade-in-up">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1B5442] to-[#143d30] flex items-center justify-center shrink-0 mr-3 mt-1 shadow-sm hidden sm:flex">
-              <Bot size={16} className="text-white" />
+              <span className="text-white text-[10px] font-black tracking-tighter">SIYP</span>
             </div>
             <div className="bg-white border border-gray-100 rounded-3xl rounded-tl-sm p-5 shadow-md flex items-center gap-3 h-14">
               <div className="flex gap-1.5">
