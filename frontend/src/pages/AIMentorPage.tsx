@@ -172,9 +172,9 @@ const AIMentorPage: React.FC = () => {
       <div className="bg-[#F8F7F4] min-h-screen flex flex-col items-center justify-center font-['Inter',sans-serif]">
         <Navbar />
         <div className="flex flex-col items-center gap-6 animate-pulse mt-20">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#1B5442] to-[#143d30] flex items-center justify-center shadow-2xl relative overflow-hidden transform rotate-3">
-            <div className="absolute inset-0 bg-white/10 animate-[spin_4s_linear_infinite]" style={{ clipPath: 'polygon(50% 50%, 100% 0, 100% 100%)' }}></div>
-            <span className="text-white text-2xl font-black tracking-tighter relative z-10">SIYP</span>
+          <div className="w-20 h-20 rounded-2xl bg-white flex items-center justify-center shadow-2xl relative overflow-hidden transform rotate-3 border border-gray-100">
+            <div className="absolute inset-0 bg-white/40 animate-[spin_3s_linear_infinite] z-20 backdrop-blur-sm" style={{ clipPath: 'polygon(50% 50%, 100% 0, 100% 100%)' }}></div>
+            <img src="/logo.jpg" alt="SIYP AI" className="w-full h-full object-cover relative z-10" />
           </div>
           <div className="text-center">
             <h2 className="text-xl font-bold text-[#1B5442] tracking-tight mb-2">SIYP AI is waking up...</h2>
@@ -231,8 +231,8 @@ const AIMentorPage: React.FC = () => {
             className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up`}
           >
             {msg.role === 'assistant' && (
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1B5442] to-[#143d30] flex items-center justify-center shrink-0 mr-3 mt-1 shadow-sm hidden sm:flex">
-                <span className="text-white text-[10px] font-black tracking-tighter">SIYP</span>
+              <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 mr-3 mt-1 shadow-sm hidden sm:flex overflow-hidden border border-gray-100">
+                <img src="/logo.jpg" alt="SIYP" className="w-full h-full object-cover" />
               </div>
             )}
             
@@ -261,8 +261,8 @@ const AIMentorPage: React.FC = () => {
         
         {isLoading && (
           <div className="flex justify-start animate-fade-in-up">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1B5442] to-[#143d30] flex items-center justify-center shrink-0 mr-3 mt-1 shadow-sm hidden sm:flex">
-              <span className="text-white text-[10px] font-black tracking-tighter">SIYP</span>
+            <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 mr-3 mt-1 shadow-sm hidden sm:flex overflow-hidden border border-gray-100">
+              <img src="/logo.jpg" alt="SIYP" className="w-full h-full object-cover" />
             </div>
             <div className="bg-white border border-gray-100 rounded-3xl rounded-tl-sm p-5 shadow-md flex items-center gap-3 h-14">
               <div className="flex gap-1.5">
