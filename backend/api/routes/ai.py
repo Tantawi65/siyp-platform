@@ -11,16 +11,24 @@ from core.ai_service import generate_recommendations, chat_with_ai
 
 router = APIRouter(tags=["ai"])
 
-@router.post("/recommendations/generate", response_model=AIRecommendationResponse)
-def generate_ai_recommendations(db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+@router.post("/recommendations/generate")
+def generate_ai_recommendations(page: int = 0, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     """
     Manually triggers the generation of new AI recommendations based on the user's profile
     and currently active opportunities.
     """
-    rec = generate_recommendations(db, current_user.id)
-    if isinstance(rec, str): # returned a string message if no opportunities
-        raise HTTPException(status_code=404, detail=rec)
-    return rec
+    result = generate_recommendations(db, current_user.id, page)
+    if isinstance(result, str): # returned a string message if no opportunities
+        raise HTTPException(status_code=404, detail=result)
+    
+    rec, has_more = result
+    return {
+        "id": rec.id,
+        "user_id": rec.user_id,
+        "raw_recommendation": rec.raw_recommendation,
+        "created_at": rec.created_at,
+        "has_more": has_more
+    }
 
 @router.get("/recommendations", response_model=AIRecommendationResponse)
 def get_latest_recommendation(db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
@@ -37,8 +45,8 @@ def chat_with_ai_endpoint(request: AIChatRequest, db: Session = Depends(get_db),
     """
     Sends a message to the AI Assistant.
     """
-    response = chat_with_ai(db, current_user.id, request.message)
-    return {"reply": response}
+    response, has_more = chat_with_ai(db, current_user.id, request.message, request.page)
+    return {"reply": response, "has_more": has_more}
 
 @router.get("/chat/history", response_model=List[AIChatMessageResponse])
 def get_chat_history(db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):

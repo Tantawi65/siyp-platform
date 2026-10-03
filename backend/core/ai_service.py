@@ -20,9 +20,9 @@ Do not mention that you are an AI made by Groq, OpenAI, or Google. You work excl
 CRITICAL INSTRUCTIONS FOR FORMATTING RECOMMENDATIONS:
 1. When recommending opportunities to the user, you MUST output a Markdown table.
 2. You must STRICTLY separate them into two headers: "Fixed Deadlines" and "Rolling Deadlines".
-3. The tables MUST have EXACTLY these columns: [Opportunity Name, Deadline, Link].
-4. Do not include Match Score or Missing Skills.
-5. NEVER leave any column blank. You must fill in every cell.
+3. The tables MUST have EXACTLY these THREE columns: [Opportunity Name, Deadline, Link].
+4. Do NOT include Match Score, Missing Skills, or any other columns.
+5. NEVER leave any column blank. If you do not have the exact details for an opportunity, DO NOT include it in the table.
 6. For the Link column, you MUST use standard markdown linking exactly as provided in the context (e.g., [View Details](/opportunities/123)).
 7. LIMIT your response to the Top 10 most relevant opportunities. Do not try to list every single opportunity, as this causes formatting errors.
 """
@@ -64,7 +64,7 @@ def check_rate_limit(db: Session, user_id: int) -> AIUsageLog:
         
     return usage
 
-def generate_recommendations(db: Session, user_id: int):
+def generate_recommendations(db: Session, user_id: int, page: int = 0):
     # 1. Check rate limit
     usage = check_rate_limit(db, user_id)
     
@@ -91,20 +91,29 @@ def generate_recommendations(db: Session, user_id: int):
     if not active_opps:
         return "No active opportunities available at the moment to recommend."
 
-    # 4. Build Context String
+    # 4. Paginate
+    start_idx = page * 10
+    end_idx = start_idx + 10
+    chunk = active_opps[start_idx:end_idx]
+    has_more = len(active_opps) > end_idx
+    
+    if not chunk:
+        return "You have viewed all currently available opportunities."
+
+    # 5. Build Context String
     profile_ctx = f"User Profile:\\nMajor: {profile.major}\\nEducation: {profile.education_level}\\nGPA: {profile.gpa}\\nSkills: {profile.skills}\\nInterests: {profile.interests}\\nLanguages: {profile.languages}"
     
-    opps_ctx = "Available Active Opportunities:\\n"
-    for opp in active_opps:
+    opps_ctx = f"Available Active Opportunities (Page {page + 1}):\\n"
+    for opp in chunk:
         deadline_str = opp.deadline.strftime('%Y-%m-%d') if opp.deadline else "Rolling Deadline"
         opps_ctx += f"- ID: {opp.id} | Title: {opp.title} | Deadline: {deadline_str} | Country: {opp.country} | Eligibility: {opp.eligibility} | Link: /opportunities/{opp.id}\\n"
 
-    prompt = f"{profile_ctx}\\n\\n{opps_ctx}\\n\\nPlease analyze the user's profile against the available opportunities. Provide personalized recommendations formatted EXACTLY as requested in your system instructions. Do not forget any details."
+    prompt = f"{profile_ctx}\\n\\n{opps_ctx}\\n\\nPlease analyze the user's profile against these specific opportunities. Provide personalized recommendations formatted EXACTLY as requested in your system instructions. Do not forget any details."
     
-    # 5. Call API
+    # 6. Call API
     ai_response = _call_groq_api([{"role": "user", "content": prompt}])
     
-    # 6. Save Recommendation & Increment Usage
+    # 7. Save Recommendation & Increment Usage
     rec = AIRecommendation(user_id=user_id, raw_recommendation=ai_response)
     db.add(rec)
     
@@ -112,9 +121,9 @@ def generate_recommendations(db: Session, user_id: int):
     db.commit()
     db.refresh(rec)
     
-    return rec
+    return rec, has_more
 
-def chat_with_ai(db: Session, user_id: int, user_message: str):
+def chat_with_ai(db: Session, user_id: int, user_message: str, page: int = 0):
     # 1. Check rate limit
     usage = check_rate_limit(db, user_id)
     
@@ -124,7 +133,7 @@ def chat_with_ai(db: Session, user_id: int, user_message: str):
     
     now = datetime.utcnow()
     two_weeks_ago = now - timedelta(days=14)
-    active_opps = db.query(Opportunity).filter(
+    all_active_opps = db.query(Opportunity).filter(
         Opportunity.status == "approved",
         or_(
             Opportunity.deadline >= now,
@@ -135,12 +144,17 @@ def chat_with_ai(db: Session, user_id: int, user_message: str):
         )
     ).all()
     
+    start_idx = page * 10
+    end_idx = start_idx + 10
+    chunk = all_active_opps[start_idx:end_idx]
+    has_more = len(all_active_opps) > end_idx
+    
     profile_ctx = "User Profile:\\nNot fully configured."
     if profile:
         profile_ctx = f"User Profile:\\nMajor: {profile.major}\\nEducation: {profile.education_level}\\nGPA: {profile.gpa}\\nSkills: {profile.skills}\\nInterests: {profile.interests}\\nLanguages: {profile.languages}"
         
-    opps_ctx = "Available SIYP Opportunities Database (ONLY RECOMMEND FROM THIS LIST):\\n"
-    for opp in active_opps:
+    opps_ctx = f"Available SIYP Opportunities Database Chunk (Page {page + 1}):\\n"
+    for opp in chunk:
         deadline_str = opp.deadline.strftime('%Y-%m-%d') if opp.deadline else "Rolling Deadline"
         opps_ctx += f"- ID: {opp.id} | Title: {opp.title} | Deadline: {deadline_str} | Country: {opp.country} | Eligibility: {opp.eligibility} | Link: /opportunities/{opp.id}\\n"
 
@@ -151,11 +165,11 @@ def chat_with_ai(db: Session, user_id: int, user_message: str):
     
     messages = []
     # Force the AI to only use SIYP DB and strictly format tables
-    system_instruction = f"CRITICAL INSTRUCTION: You must ONLY recommend opportunities from the following SIYP Database. NEVER invent or suggest outside opportunities.\\nWhen generating a table, you must include exactly these columns (Opportunity Name, Deadline, Link) and fill them entirely. Limit to the Top 10 best matches.\\n\\n{opps_ctx}\\n\\n{profile_ctx}"
+    system_instruction = f"CRITICAL INSTRUCTION: You must ONLY recommend opportunities from the following SIYP Database snippet. NEVER invent or suggest outside opportunities.\\nWhen generating a table, you must include exactly these columns (Opportunity Name, Deadline, Link) and fill them entirely.\\n\\n{opps_ctx}\\n\\n{profile_ctx}"
     messages.append({"role": "system", "content": system_instruction})
     
     if latest_rec:
-        messages.append({"role": "system", "content": f"Context: The user previously received this recommendation from you:\\n{latest_rec.raw_recommendation}"})
+        messages.append({"role": "system", "content": f"Context: The user previously received this recommendation from you:\\n{latest_rec.raw_recommendation[:500]}..."})
         
     for msg in history:
         messages.append({"role": msg.role, "content": msg.content})
@@ -174,4 +188,4 @@ def chat_with_ai(db: Session, user_id: int, user_message: str):
     usage.requests_count += 1
     db.commit()
     
-    return ai_response
+    return ai_response, has_more

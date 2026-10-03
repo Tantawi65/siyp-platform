@@ -7,6 +7,7 @@ class AIRecommendationResponse(BaseModel):
     user_id: int
     raw_recommendation: str
     created_at: datetime
+    has_more: bool = False
     
     class Config:
         from_attributes = True
@@ -28,3 +29,4 @@ class AIChatMessageResponse(AIChatMessageBase):
 
 class AIChatRequest(BaseModel):
     message: str
+    page: int = 0

@@ -46,6 +46,9 @@ const AIMentorPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+
   // Scroll to bottom when messages change
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -86,17 +89,19 @@ const AIMentorPage: React.FC = () => {
     }
   };
 
-  const generateRecommendations = async () => {
+  const generateRecommendations = async (targetPage: number = 0) => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/ai/recommendations/generate', {
+      const res = await fetch(`/api/ai/recommendations/generate?page=${targetPage}`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
         const data = await res.json();
         setMessages(prev => [...prev, { id: Date.now(), role: 'assistant', content: data.raw_recommendation }]);
+        setHasMore(data.has_more);
+        setPage(targetPage);
       } else {
         const errData = await res.json();
         setMessages(prev => [...prev, { id: Date.now(), role: 'assistant', content: `**Notice:** ${errData.detail}` }]);
@@ -108,7 +113,7 @@ const AIMentorPage: React.FC = () => {
     }
   };
 
-  const handleSend = async (e?: React.FormEvent, overrideText?: string) => {
+  const handleSend = async (e?: React.FormEvent, overrideText?: string, targetPage?: number) => {
     if (e) e.preventDefault();
     const userText = overrideText || inputValue.trim();
     if (!userText) return;
@@ -116,6 +121,8 @@ const AIMentorPage: React.FC = () => {
     setInputValue('');
     setMessages(prev => [...prev, { id: Date.now(), role: 'user', content: userText }]);
     setIsLoading(true);
+
+    const apiPage = targetPage !== undefined ? targetPage : page;
 
     try {
       const token = localStorage.getItem('token');
@@ -125,12 +132,14 @@ const AIMentorPage: React.FC = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}` 
         },
-        body: JSON.stringify({ message: userText })
+        body: JSON.stringify({ message: userText, page: apiPage })
       });
       
       if (res.ok) {
         const data = await res.json();
         setMessages(prev => [...prev, { id: Date.now() + 1, role: 'assistant', content: data.reply }]);
+        setHasMore(data.has_more);
+        setPage(apiPage);
       } else {
         const errData = await res.json();
         setMessages(prev => [...prev, { id: Date.now() + 1, role: 'assistant', content: `*Error:* ${errData.detail}` }]);
@@ -164,6 +173,8 @@ const AIMentorPage: React.FC = () => {
         role: 'assistant',
         content: `Hello ${user?.name || 'there'}! I'm your SIYP AI Mentor. I can help you find the best opportunities and prepare your applications. What are you looking for today?`
       }]);
+      setPage(0);
+      setHasMore(false);
     } catch (err) {
       console.error('Failed to clear chat', err);
     }
@@ -178,7 +189,7 @@ const AIMentorPage: React.FC = () => {
         {messages.length === 1 && messages[0].id === 'welcome' && (
           <div className="flex justify-center my-8">
             <button 
-              onClick={generateRecommendations}
+              onClick={() => generateRecommendations(0)}
               disabled={isLoading}
               className="group relative overflow-hidden bg-white text-[#1B5442] text-sm font-bold py-4 px-8 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:shadow-[0_8px_30px_rgb(27,84,66,0.15)] border border-[#1B5442]/10 transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-3"
             >
@@ -244,19 +255,13 @@ const AIMentorPage: React.FC = () => {
       <div className="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-xl border-t border-gray-100 pt-3 pb-6 px-4 z-40 shadow-[0_-10px_40px_rgba(0,0,0,0.03)] flex flex-col items-center">
         
         {/* Suggested Prompts Pill */}
-        {messages.length > 1 && !isLoading && messages[messages.length - 1].role === 'assistant' && (
+        {messages.length > 1 && !isLoading && hasMore && messages[messages.length - 1].role === 'assistant' && (
           <div className="max-w-4xl w-full flex gap-2 mb-3 overflow-x-auto pb-1 custom-scrollbar">
             <button 
-              onClick={() => handleSend(undefined, "Show me more eligible opportunities")}
+              onClick={() => handleSend(undefined, "Show me more eligible opportunities", page + 1)}
               className="whitespace-nowrap px-4 py-2 bg-white border border-[#1B5442]/30 text-[#1B5442] text-xs font-semibold rounded-full shadow-sm hover:bg-[#1B5442]/5 hover:border-[#1B5442] transition-colors flex items-center gap-1.5"
             >
               Show me more eligible opportunities <Sparkles size={12} />
-            </button>
-            <button 
-              onClick={() => handleSend(undefined, "Can you review my skills and tell me what I am missing for these?")}
-              className="whitespace-nowrap px-4 py-2 bg-white border border-gray-200 text-gray-600 text-xs font-semibold rounded-full shadow-sm hover:bg-gray-50 hover:text-gray-900 transition-colors"
-            >
-              What skills am I missing? 💡
             </button>
           </div>
         )}
@@ -270,7 +275,7 @@ const AIMentorPage: React.FC = () => {
             <Trash2 size={20} />
           </button>
           
-          <form onSubmit={handleSend} className="relative flex items-center flex-grow">
+          <form onSubmit={(e) => handleSend(e)} className="relative flex items-center flex-grow">
             <input
               type="text"
               value={inputValue}
