@@ -65,7 +65,14 @@ const AIMentorPage: React.FC = () => {
   }, [user]);
 
   const fetchHistory = async () => {
+    const welcomeMsg: Message = {
+      id: 'welcome',
+      role: 'assistant',
+      content: `Hello ${user?.name || 'there'}! I'm your SIYP AI Mentor. I can help you find the best opportunities and prepare your applications.\n\n*Note: To give you the best recommendations, I analyze opportunities in batches. Simply click **"Show me more"** after my response to view the next set!*\n\nWhat are you looking for today?`
+    };
+
     try {
+      setIsLoading(true);
       const token = localStorage.getItem('token');
       const res = await fetch('/api/ai/chat/history', {
         headers: { Authorization: `Bearer ${token}` }
@@ -75,17 +82,16 @@ const AIMentorPage: React.FC = () => {
         if (data.length > 0) {
           setMessages(data);
         } else {
-          setMessages([
-            {
-              id: 'welcome',
-              role: 'assistant',
-              content: `Hello ${user?.name || 'there'}! I'm your SIYP AI Mentor. I can help you find the best opportunities and prepare your applications.\n\n*Note: To give you the best recommendations, I analyze opportunities in batches. Simply click **"Show me more"** after my response to view the next set!*\n\nWhat are you looking for today?`
-            }
-          ]);
+          setMessages([welcomeMsg]);
         }
+      } else {
+        setMessages([welcomeMsg]);
       }
     } catch (err) {
       console.error('Failed to fetch chat history', err);
+      setMessages([welcomeMsg]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
