@@ -64,16 +64,16 @@ const FeatureCard: React.FC<{
 
 // ---- Step ----
 const Step: React.FC<{ num: number; title: string; desc: string; active?: boolean }> = ({ num, title, desc, active }) => (
-  <div className="flex flex-col items-center text-center gap-4">
+  <div className="flex flex-row md:flex-col items-start md:items-center text-left md:text-center gap-6 md:gap-4 relative z-10">
     <div
-      className={`w-14 h-14 rounded-full flex items-center justify-center font-black text-lg shadow-lg z-10 ${
+      className={`shrink-0 w-14 h-14 rounded-full flex items-center justify-center font-black text-lg shadow-lg z-10 ${
         active ? 'bg-[#1B5442] text-white ring-4 ring-[#1B5442]/20' : 'bg-white text-[#1B5442] border-2 border-[#1B5442]/30'
       }`}
       style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
     >
       {num}
     </div>
-    <div>
+    <div className="pt-2 md:pt-0">
       <h3 className="font-bold text-base mb-1" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>{title}</h3>
       <p className="text-sm text-gray-500">{desc}</p>
     </div>
@@ -274,7 +274,7 @@ const LandingPage: React.FC = () => {
               <p className="text-gray-500">Four simple steps to your next big opportunity.</p>
             </div>
           </ScrollReveal>
-          <div className="relative grid grid-cols-1 md:grid-cols-4 gap-8 mt-16">
+          <div className="relative grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-8 mt-16 max-w-sm md:max-w-none mx-auto">
             
             {/* Desktop Horizontal Moving Energy Beam */}
             <div className="hidden md:block absolute top-7 left-[12%] right-[12%] h-[2px] bg-gray-200/80 z-0 overflow-hidden rounded-full">
@@ -291,7 +291,7 @@ const LandingPage: React.FC = () => {
             </div>
 
             {/* Mobile Vertical Moving Energy Beam */}
-            <div className="md:hidden absolute top-7 bottom-[15%] left-1/2 -translate-x-1/2 w-[2px] bg-gray-200/80 z-0 overflow-hidden rounded-full">
+            <div className="md:hidden absolute top-7 bottom-[15%] left-[27px] w-[2px] bg-gray-200/80 z-0 overflow-hidden rounded-full">
               {/* Gold beam */}
               <div 
                 className="absolute left-0 w-full h-40 bg-gradient-to-b from-transparent via-[#E8A857] to-transparent shadow-[0_0_12px_#E8A857]"
