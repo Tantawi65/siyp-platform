@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, ArrowRight, CheckCircle2, Search } from 'lucide-react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 
 const AIAppleShowcase: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);

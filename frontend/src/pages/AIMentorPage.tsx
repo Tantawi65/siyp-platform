@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Bot, Send, Loader2, Sparkles, ArrowLeft, Trash2 } from 'lucide-react';
+import { Send, Loader2, Sparkles, Trash2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useAuth } from '../context/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
+
 import Navbar from '../layouts/Navbar';
 
 interface Message {
@@ -40,7 +40,7 @@ const MarkdownComponents = {
 
 const AIMentorPage: React.FC = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
