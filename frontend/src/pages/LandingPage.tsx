@@ -4,6 +4,7 @@ import { ArrowRight, Star, Globe, Users, TrendingUp, Shield, BookOpen } from 'lu
 import Navbar from '../layouts/Navbar';
 import Footer from '../layouts/Footer';
 import AIAppleShowcase from '../components/AIAppleShowcase';
+import ScrollReveal from '../components/ScrollReveal';
 
 // ---- Animated count-up hook ----
 function useCountUp(target: number, duration = 2000, start = false) {
@@ -117,14 +118,16 @@ const StatsSection: React.FC = () => {
   return (
     <section className="py-16 bg-[#F8F7F4]">
       <div className="container-max">
-        <div
-          ref={ref}
-          className="bg-[#1B5442] rounded-3xl px-8 py-12 grid grid-cols-1 sm:grid-cols-3 gap-10 text-center divide-y sm:divide-y-0 sm:divide-x divide-white/10"
-        >
-          <StatCard target={100} suffix="K+" label="Social Media Views" delay={0} started={started} />
-          <StatCard target={3300} suffix="+" label="Followers" delay={200} started={started} />
-          <StatCard target={9} label="Live Sessions" delay={400} started={started} />
-        </div>
+        <ScrollReveal animation="scale" duration={800}>
+          <div
+            ref={ref}
+            className="bg-[#1B5442] rounded-3xl px-8 py-12 grid grid-cols-1 sm:grid-cols-3 gap-10 text-center divide-y sm:divide-y-0 sm:divide-x divide-white/10"
+          >
+            <StatCard target={100} suffix="K+" label="Social Media Views" delay={0} started={started} />
+            <StatCard target={3300} suffix="+" label="Followers" delay={200} started={started} />
+            <StatCard target={9} label="Live Sessions" delay={400} started={started} />
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -208,36 +211,42 @@ const LandingPage: React.FC = () => {
       {/* ============== FEATURES BENTO ============== */}
       <section id="features" className="section-pad bg-[#F8F7F4]">
         <div className="container-max">
-          <div className="text-center mb-14">
-            <span className="badge badge-primary mb-4">Platform Features</span>
-            <h2 className="text-3xl md:text-4xl font-black text-[#1A1A2E] mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-              Everything you need to succeed
-            </h2>
-            <p className="text-gray-500 max-w-xl mx-auto">
-              Powerful tools designed to help you find, share, and track the best professional opportunities.
-            </p>
-          </div>
+          <ScrollReveal>
+            <div className="text-center mb-14">
+              <span className="badge badge-primary mb-4">Platform Features</span>
+              <h2 className="text-3xl md:text-4xl font-black text-[#1A1A2E] mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                Everything you need to succeed
+              </h2>
+              <p className="text-gray-500 max-w-xl mx-auto">
+                Powerful tools designed to help you find, share, and track the best professional opportunities.
+              </p>
+            </div>
+          </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div className="md:col-span-2">
+            <ScrollReveal delay={100} className="md:col-span-2">
               <FeatureCard
                 icon={<Globe size={22} />}
                 title="Discover"
                 desc="Browse thousands of curated opportunities — scholarships, fellowships, internships, and conferences — filtered by country, funding type, and category."
                 colSpan="h-full"
               />
-            </div>
-            <FeatureCard
-              icon={<BookOpen size={22} />}
-              title="Publish"
-              desc="Submit opportunities and reach a highly engaged audience. All posts are reviewed by our team before going live."
-            />
-            <FeatureCard
-              icon={<Users size={22} />}
-              title="Connect"
-              desc="Find and connect with peers, mentors, and accepted participants in programs worldwide."
-            />
-            <div className="md:col-span-2">
+            </ScrollReveal>
+            <ScrollReveal delay={200} animation="fade-left">
+              <FeatureCard
+                icon={<BookOpen size={22} />}
+                title="Publish"
+                desc="Submit opportunities and reach a highly engaged audience. All posts are reviewed by our team before going live."
+              />
+            </ScrollReveal>
+            <ScrollReveal delay={300} animation="fade-right">
+              <FeatureCard
+                icon={<Users size={22} />}
+                title="Connect"
+                desc="Find and connect with peers, mentors, and accepted participants in programs worldwide."
+              />
+            </ScrollReveal>
+            <ScrollReveal delay={400} className="md:col-span-2">
               <FeatureCard
                 icon={<TrendingUp size={22} />}
                 title="Track"
@@ -245,7 +254,7 @@ const LandingPage: React.FC = () => {
                 dark
                 colSpan="h-full"
               />
-            </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -256,19 +265,21 @@ const LandingPage: React.FC = () => {
       {/* ============== HOW IT WORKS ============== */}
       <section className="section-pad bg-[#F8F7F4]">
         <div className="container-max">
-          <div className="text-center mb-14">
-            <span className="badge badge-primary mb-4">Simple Process</span>
-            <h2 className="text-3xl md:text-4xl font-black text-[#1A1A2E] mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-              How it works
-            </h2>
-            <p className="text-gray-500">Four simple steps to your next big opportunity.</p>
-          </div>
+          <ScrollReveal>
+            <div className="text-center mb-14">
+              <span className="badge badge-primary mb-4">Simple Process</span>
+              <h2 className="text-3xl md:text-4xl font-black text-[#1A1A2E] mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                How it works
+              </h2>
+              <p className="text-gray-500">Four simple steps to your next big opportunity.</p>
+            </div>
+          </ScrollReveal>
           <div className="relative grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="hidden md:block absolute top-7 left-[15%] right-[15%] h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
-            <Step num={1} title="Create Account" desc="Sign up free and set up your profile in minutes." active />
-            <Step num={2} title="Explore" desc="Browse curated opportunities tailored to your goals." />
-            <Step num={3} title="Apply" desc="Use our tracker to organise and submit applications." />
-            <Step num={4} title="Get Accepted" desc="Land the role and take the next big step." active />
+            <ScrollReveal delay={100} animation="zoom-in"><Step num={1} title="Create Account" desc="Sign up free and set up your profile in minutes." active /></ScrollReveal>
+            <ScrollReveal delay={250} animation="zoom-in"><Step num={2} title="Explore" desc="Browse curated opportunities tailored to your goals." /></ScrollReveal>
+            <ScrollReveal delay={400} animation="zoom-in"><Step num={3} title="Apply" desc="Use our tracker to organise and submit applications." /></ScrollReveal>
+            <ScrollReveal delay={550} animation="zoom-in"><Step num={4} title="Get Accepted" desc="Land the role and take the next big step." active /></ScrollReveal>
           </div>
         </div>
       </section>
@@ -276,34 +287,42 @@ const LandingPage: React.FC = () => {
       {/* ============== TESTIMONIALS ============== */}
       <section className="section-pad bg-white">
         <div className="container-max">
-          <div className="text-center mb-14">
-            <span className="badge badge-primary mb-4">Community Voices</span>
-            <h2 className="text-3xl md:text-4xl font-black text-[#1A1A2E] mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-              Loved by thousands
-            </h2>
-          </div>
+          <ScrollReveal>
+            <div className="text-center mb-14">
+              <span className="badge badge-primary mb-4">Community Voices</span>
+              <h2 className="text-3xl md:text-4xl font-black text-[#1A1A2E] mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                Loved by thousands
+              </h2>
+            </div>
+          </ScrollReveal>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Testimonial
-              quote="SIYP is doing an amazing job, and I enjoy following everything they share. I believe this community has a bright future, and I wouldn't be surprised to see SIYP launching its own international programs one day."
-              name="Ahmed Yahia"
-              role="Community Member"
-              initials="AY"
-              color="bg-[#1B5442]"
-            />
-            <Testimonial
-              quote="I've been impressed by how much SIYP has grown over the years. Seeing the launch of the website was a pleasant surprise; it looks professional and offers something unique. It's clear that a lot of effort has gone into building this platform."
-              name="Joseph Jamil"
-              role="Content Creator"
-              initials="JJ"
-              color="bg-[#2A7A60]"
-            />
-            <Testimonial
-              quote="I'm truly grateful to the SIYP Team for everything they do. Whenever I needed help or had a question, someone from the team was always there to support me. Thank you to everyone who contributes to SIYP!"
-              name="NourEldeen"
-              role="Community Member"
-              initials="N"
-              color="bg-[#E8A857]"
-            />
+            <ScrollReveal delay={100}>
+              <Testimonial
+                quote="SIYP is doing an amazing job, and I enjoy following everything they share. I believe this community has a bright future, and I wouldn't be surprised to see SIYP launching its own international programs one day."
+                name="Ahmed Yahia"
+                role="Community Member"
+                initials="AY"
+                color="bg-[#1B5442]"
+              />
+            </ScrollReveal>
+            <ScrollReveal delay={250}>
+              <Testimonial
+                quote="I've been impressed by how much SIYP has grown over the years. Seeing the launch of the website was a pleasant surprise; it looks professional and offers something unique. It's clear that a lot of effort has gone into building this platform."
+                name="Joseph Jamil"
+                role="Content Creator"
+                initials="JJ"
+                color="bg-[#2A7A60]"
+              />
+            </ScrollReveal>
+            <ScrollReveal delay={400}>
+              <Testimonial
+                quote="I'm truly grateful to the SIYP Team for everything they do. Whenever I needed help or had a question, someone from the team was always there to support me. Thank you to everyone who contributes to SIYP!"
+                name="NourEldeen"
+                role="Community Member"
+                initials="N"
+                color="bg-[#E8A857]"
+              />
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -311,26 +330,28 @@ const LandingPage: React.FC = () => {
       {/* ============== CTA BANNER ============== */}
       <section className="section-pad bg-[#F8F7F4]">
         <div className="container-max">
-          <div className="bg-[#1B5442] rounded-3xl px-8 md:px-16 py-14 text-center relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-0 w-60 h-60 bg-[#E8A857]/10 rounded-full translate-y-1/2 -translate-x-1/2" />
-            <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl font-black text-white mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                Ready to find your opportunity?
-              </h2>
-              <p className="text-white/70 mb-8 max-w-lg mx-auto">
-                Join thousands of students and professionals who have already discovered their next big step.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link to="/register" className="px-8 py-4 bg-white text-[#1B5442] font-bold rounded-full hover:bg-gray-100 transition-all shadow-xl text-base flex items-center gap-2">
-                  Start for Free <ArrowRight size={18} />
-                </Link>
-                <Link to="/explore" className="px-8 py-4 border border-white/30 text-white font-semibold rounded-full hover:bg-white/10 transition-all text-base">
-                  Browse Opportunities
-                </Link>
+          <ScrollReveal animation="zoom-in" duration={800}>
+            <div className="bg-[#1B5442] rounded-3xl px-8 md:px-16 py-14 text-center relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute bottom-0 left-0 w-60 h-60 bg-[#E8A857]/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+              <div className="relative z-10">
+                <h2 className="text-3xl md:text-4xl font-black text-white mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                  Ready to find your opportunity?
+                </h2>
+                <p className="text-white/70 mb-8 max-w-lg mx-auto">
+                  Join thousands of students and professionals who have already discovered their next big step.
+                </p>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <Link to="/register" className="px-8 py-4 bg-white text-[#1B5442] font-bold rounded-full hover:bg-gray-100 transition-all shadow-xl text-base flex items-center gap-2">
+                    Start for Free <ArrowRight size={18} />
+                  </Link>
+                  <Link to="/explore" className="px-8 py-4 border border-white/30 text-white font-semibold rounded-full hover:bg-white/10 transition-all text-base">
+                    Browse Opportunities
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
