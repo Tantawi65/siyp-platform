@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from core.database import get_db
-from core.security import get_current_active_user
+from api.deps import get_current_active_user
 from models.user import User
 from models.ai import AIRecommendation, AIChatHistory
 from schemas.ai import AIRecommendationResponse, AIChatMessageResponse, AIChatRequest
