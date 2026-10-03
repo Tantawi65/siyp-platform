@@ -294,7 +294,11 @@ const AIMentorPage: React.FC = () => {
           </form>
         </div>
         <div className="text-center mt-3 max-w-4xl mx-auto w-full">
-          <span className="text-[11px] text-gray-400 font-medium">AI recommendations can make mistakes. Always verify deadlines on the official opportunity page.</span>
+          <span className="text-[11px] text-gray-400 font-medium">
+            AI recommendations can make mistakes. Always verify deadlines on the official opportunity page. <br className="sm:hidden" />
+            <span className="hidden sm:inline"> | </span> 
+            To prevent system overload, opportunities are processed in batches. Use the "Show me more" button above to view the next batch.
+          </span>
         </div>
       </div>
     </div>
