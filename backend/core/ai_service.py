@@ -10,7 +10,7 @@ from models.opportunity import Opportunity
 from models.ai import AIRecommendation, AIChatHistory, AIUsageLog
 
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-GROQ_MODEL = "llama-3.1-70b-versatile"
+GROQ_MODEL = "openai/gpt-oss-120b"
 DAILY_CHAT_LIMIT = 50
 
 SYSTEM_PROMPT = """You are the official Career & Academic Mentor for the SIYP Platform. Your name is SIYP Assistant.
