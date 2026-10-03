@@ -1,7 +1,7 @@
 import requests
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_
-from datetime import datetime
+from datetime import datetime, timedelta
 from fastapi import HTTPException
 
 from core.config import settings
@@ -18,10 +18,11 @@ You are highly professional, encouraging, and deeply knowledgeable about youth o
 Do not mention that you are an AI made by Groq, OpenAI, or Google. You work exclusively for SIYP.
 
 CRITICAL INSTRUCTIONS FOR FORMATTING RECOMMENDATIONS:
-When recommending opportunities to the user, you MUST output a Markdown table.
-You must strictly separate them into two sections: "Fixed Deadlines" and "Rolling Deadlines".
-The tables MUST have these columns: [Opportunity Name, Deadline, Match Score, Missing Skills, Link].
-For the link column, use standard markdown linking to the provided opportunity path (e.g., [View Details](/opportunity/123)).
+1. When recommending opportunities to the user, you MUST output a Markdown table.
+2. You must STRICTLY separate them into two headers: "Fixed Deadlines" and "Rolling Deadlines".
+3. The tables MUST have EXACTLY these columns: [Opportunity Name, Deadline, Match Score, Missing Skills, Link].
+4. NEVER leave any column blank or omit details. You must fill in every cell with the information provided in the context.
+5. For the Link column, you MUST use standard markdown linking exactly as provided in the context (e.g., [View Details](/opportunity/123)).
 """
 
 def _call_groq_api(messages: list) -> str:
@@ -36,7 +37,7 @@ def _call_groq_api(messages: list) -> str:
     data = {
         "model": GROQ_MODEL,
         "messages": [{"role": "system", "content": SYSTEM_PROMPT}] + messages,
-        "temperature": 0.7
+        "temperature": 0.3
     }
     
     response = requests.post(GROQ_API_URL, headers=headers, json=data)
@@ -71,13 +72,17 @@ def generate_recommendations(db: Session, user_id: int):
     if not profile or not profile.major:
         raise HTTPException(status_code=400, detail="Please complete your profile (Major, Skills, etc.) before generating AI recommendations.")
         
-    # 3. Filter Active Opportunities (Approved, and Deadline >= Today OR Deadline IS NULL)
+    # 3. Filter Active Opportunities (Approved, and Deadline >= Today OR (Deadline IS NULL AND published < 2 weeks ago))
     now = datetime.utcnow()
+    two_weeks_ago = now - timedelta(days=14)
     active_opps = db.query(Opportunity).filter(
         Opportunity.status == "approved",
         or_(
             Opportunity.deadline >= now,
-            Opportunity.deadline == None
+            and_(
+                Opportunity.deadline == None,
+                Opportunity.published_date >= two_weeks_ago
+            )
         )
     ).all()
     
@@ -90,9 +95,9 @@ def generate_recommendations(db: Session, user_id: int):
     opps_ctx = "Available Active Opportunities:\\n"
     for opp in active_opps:
         deadline_str = opp.deadline.strftime('%Y-%m-%d') if opp.deadline else "Rolling Deadline"
-        opps_ctx += f"- ID: {opp.id} | Title: {opp.title} | Deadline: {deadline_str} | Country: {opp.country} | Eligibility: {opp.eligibility} | Link: /opportunity/{opp.id}\\n"
+        opps_ctx += f"- ID: {opp.id} | Title: {opp.title} | Deadline: {deadline_str} | Country: {opp.country} | Eligibility: {opp.eligibility} | Link: /opportunities/{opp.id}\\n"
 
-    prompt = f"{profile_ctx}\\n\\n{opps_ctx}\\n\\nPlease analyze the user's profile against the available opportunities. Provide personalized recommendations formatted exactly as requested in your system instructions."
+    prompt = f"{profile_ctx}\\n\\n{opps_ctx}\\n\\nPlease analyze the user's profile against the available opportunities. Provide personalized recommendations formatted EXACTLY as requested in your system instructions. Do not forget any details."
     
     # 5. Call API
     ai_response = _call_groq_api([{"role": "user", "content": prompt}])
@@ -116,11 +121,15 @@ def chat_with_ai(db: Session, user_id: int, user_message: str):
     profile = user.profile
     
     now = datetime.utcnow()
+    two_weeks_ago = now - timedelta(days=14)
     active_opps = db.query(Opportunity).filter(
         Opportunity.status == "approved",
         or_(
             Opportunity.deadline >= now,
-            Opportunity.deadline == None
+            and_(
+                Opportunity.deadline == None,
+                Opportunity.published_date >= two_weeks_ago
+            )
         )
     ).all()
     
@@ -131,7 +140,7 @@ def chat_with_ai(db: Session, user_id: int, user_message: str):
     opps_ctx = "Available SIYP Opportunities Database (ONLY RECOMMEND FROM THIS LIST):\\n"
     for opp in active_opps:
         deadline_str = opp.deadline.strftime('%Y-%m-%d') if opp.deadline else "Rolling Deadline"
-        opps_ctx += f"- ID: {opp.id} | Title: {opp.title} | Deadline: {deadline_str} | Country: {opp.country} | Eligibility: {opp.eligibility} | Link: /opportunity/{opp.id}\\n"
+        opps_ctx += f"- ID: {opp.id} | Title: {opp.title} | Deadline: {deadline_str} | Country: {opp.country} | Eligibility: {opp.eligibility} | Link: /opportunities/{opp.id}\\n"
 
     # 3. Get Context (Latest Recommendation + Chat History)
     latest_rec = db.query(AIRecommendation).filter(AIRecommendation.user_id == user_id).order_by(AIRecommendation.created_at.desc()).first()
@@ -139,8 +148,8 @@ def chat_with_ai(db: Session, user_id: int, user_message: str):
     history.reverse() # Oldest to newest
     
     messages = []
-    # Force the AI to only use SIYP DB
-    system_instruction = f"CRITICAL INSTRUCTION: You must ONLY recommend opportunities from the following SIYP Database. NEVER invent or suggest outside opportunities.\\n\\n{opps_ctx}\\n\\n{profile_ctx}"
+    # Force the AI to only use SIYP DB and strictly format tables
+    system_instruction = f"CRITICAL INSTRUCTION: You must ONLY recommend opportunities from the following SIYP Database. NEVER invent or suggest outside opportunities.\\nWhen generating a table, you must include EVERY column (Title, Deadline, Match Score, Missing Skills, Link) and fill them entirely.\\n\\n{opps_ctx}\\n\\n{profile_ctx}"
     messages.append({"role": "system", "content": system_instruction})
     
     if latest_rec:
