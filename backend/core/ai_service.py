@@ -28,11 +28,11 @@ CRITICAL INSTRUCTIONS FOR FORMATTING RECOMMENDATIONS:
 8. STRICT ELIGIBILITY FILTER: You are absolutely FORBIDDEN from recommending an opportunity if the user's Education level does not match the opportunity's Eligibility requirement. You must critically compare them before adding it to the table. If they do not match, skip it.
 
 CRITICAL CHAIN OF THOUGHT REQUIREMENT:
-Before you output ANY tables or text to the user, you MUST write a brief evaluation inside a `<thinking>` block. In this block, explicitly check the user's Education vs each Opportunity's Eligibility.
+Before you output ANY tables or text to the user, you MUST write a brief evaluation inside a `<thinking>` block. In this block, explicitly check the user's Education vs each Opportunity's "Requirements" AND "Eligibility" fields. 
 Example format:
 <thinking>
-- Opp 1 (High School): User is University. FAILS. Skip.
-- Opp 2 (University): User is University. PASSES.
+- Opp 1: Requirements say "High School". User is University. FAILS. Skip.
+- Opp 2: Requirements say "University". User is University. PASSES. Add.
 </thinking>
 """
 
@@ -123,9 +123,11 @@ def generate_recommendations(db: Session, user_id: int, page: int = 0):
     opps_ctx = f"Available Active Opportunities (Page {page + 1}):\\n"
     for opp in chunk:
         deadline_str = opp.deadline.strftime('%Y-%m-%d') if opp.deadline else "Rolling Deadline"
-        opps_ctx += f"- ID: {opp.id} | Title: {opp.title} | Deadline: {deadline_str} | Country: {opp.country} | Eligibility: {opp.eligibility} | Link: /opportunities/{opp.id}\\n"
+        elig = opp.eligibility if opp.eligibility else "None"
+        req = opp.requirements[:250].replace('\\n', ' ') if opp.requirements else "None"
+        opps_ctx += f"- ID: {opp.id} | Title: {opp.title} | Deadline: {deadline_str} | Eligibility: {elig} | Requirements: {req} | Link: /opportunities/{opp.id}\\n"
 
-    prompt = f"{profile_ctx}\\n\\n{opps_ctx}\\n\\nPlease analyze my profile against these specific opportunities. Provide personalized recommendations formatted EXACTLY as requested in your system instructions. Do not forget any details.\\n\\nCRITICAL: Before you output ANY tables, you MUST write a brief evaluation inside a <thinking> block to explicitly check my Education against each Opportunity's Eligibility. If I am not strictly eligible, DO NOT include it."
+    prompt = f"{profile_ctx}\\n\\n{opps_ctx}\\n\\nPlease analyze my profile against these specific opportunities. Provide personalized recommendations formatted EXACTLY as requested in your system instructions. Do not forget any details.\\n\\nCRITICAL: Before you output ANY tables, you MUST write a brief evaluation inside a <thinking> block to explicitly check my Education against each Opportunity's Eligibility/Requirements. If I am not strictly eligible, DO NOT include it."
     
     # 6. Call API
     ai_response = _call_groq_api([{"role": "user", "content": prompt}])
@@ -173,7 +175,9 @@ def chat_with_ai(db: Session, user_id: int, user_message: str, page: int = 0):
     opps_ctx = f"Available SIYP Opportunities Database Chunk (Page {page + 1}):\\n"
     for opp in chunk:
         deadline_str = opp.deadline.strftime('%Y-%m-%d') if opp.deadline else "Rolling Deadline"
-        opps_ctx += f"- ID: {opp.id} | Title: {opp.title} | Deadline: {deadline_str} | Country: {opp.country} | Eligibility: {opp.eligibility} | Link: /opportunities/{opp.id}\\n"
+        elig = opp.eligibility if opp.eligibility else "None"
+        req = opp.requirements[:250].replace('\\n', ' ') if opp.requirements else "None"
+        opps_ctx += f"- ID: {opp.id} | Title: {opp.title} | Deadline: {deadline_str} | Eligibility: {elig} | Requirements: {req} | Link: /opportunities/{opp.id}\\n"
 
     # 3. Get Context (Latest Recommendation + Chat History)
     history = db.query(AIChatHistory).filter(AIChatHistory.user_id == user_id).order_by(AIChatHistory.created_at.desc()).limit(10).all()
@@ -187,7 +191,7 @@ def chat_with_ai(db: Session, user_id: int, user_message: str, page: int = 0):
     for msg in history:
         messages.append({"role": msg.role, "content": msg.content})
         
-    user_prompt = f"{user_message}\\n\\nCRITICAL: Before you output ANY tables, you MUST write a brief evaluation inside a <thinking> block to explicitly check my Education against each Opportunity's Eligibility. If I am not strictly eligible, DO NOT include it."
+    user_prompt = f"{user_message}\\n\\nCRITICAL: Before you output ANY tables, you MUST write a brief evaluation inside a <thinking> block to explicitly check my Education against each Opportunity's Eligibility/Requirements. If I am not strictly eligible, DO NOT include it."
     messages.append({"role": "user", "content": user_prompt})
     
     # 4. Call API
