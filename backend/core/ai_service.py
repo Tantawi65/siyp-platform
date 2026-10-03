@@ -133,9 +133,15 @@ def generate_recommendations(db: Session, user_id: int, page: int = 0):
     # 6. Call API
     ai_response = _call_groq_api([{"role": "user", "content": prompt}])
     
-    # 7. Save Recommendation & Increment Usage
+    # 7. Save Recommendation & Chat History
     rec = AIRecommendation(user_id=user_id, raw_recommendation=ai_response)
+    
+    user_chat = AIChatHistory(user_id=user_id, role="user", content="Please generate my top opportunity matches based on my profile.")
+    ai_chat = AIChatHistory(user_id=user_id, role="assistant", content=ai_response)
+    
     db.add(rec)
+    db.add(user_chat)
+    db.add(ai_chat)
     
     usage.requests_count += 1
     db.commit()

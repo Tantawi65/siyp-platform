@@ -97,6 +97,7 @@ const AIMentorPage: React.FC = () => {
   };
 
   const generateRecommendations = async (targetPage: number = 0) => {
+    setMessages(prev => [...prev, { id: Date.now() - 1, role: 'user', content: 'Please generate my top opportunity matches based on my profile.' }]);
     setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
