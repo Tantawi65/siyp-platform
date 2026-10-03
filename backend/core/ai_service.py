@@ -11,7 +11,7 @@ from models.ai import AIRecommendation, AIChatHistory, AIUsageLog
 
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 GROQ_MODEL = "openai/gpt-oss-20b"
-DAILY_CHAT_LIMIT = 15
+DAILY_CHAT_LIMIT = 50
 
 SYSTEM_PROMPT = """You are the official Career & Academic Mentor for the SIYP Platform. Your name is SIYP Assistant.
 You are highly professional, encouraging, and deeply knowledgeable about youth opportunities.
@@ -25,6 +25,7 @@ CRITICAL INSTRUCTIONS FOR FORMATTING RECOMMENDATIONS:
 5. NEVER leave any column blank. If you do not have the exact details for an opportunity, DO NOT include it in the table.
 6. For the Link column, you MUST use standard markdown linking exactly as provided in the context (e.g., [View Details](/opportunities/123)).
 7. LIMIT your response to the Top 10 most relevant opportunities. Do not try to list every single opportunity, as this causes formatting errors.
+8. CRITICAL ELIGIBILITY CHECK: You must carefully read the 'Eligibility' of each opportunity. If the user's profile (e.g., University Student) directly contradicts the eligibility (e.g., 'High School Students Only' or 'Bachelors only' when user is in high school), you MUST NOT recommend that opportunity. Exclude it entirely.
 """
 
 def _call_groq_api(messages: list) -> str:
