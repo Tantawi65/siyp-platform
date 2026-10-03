@@ -1,3 +1,4 @@
+import re
 import requests
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_
@@ -25,6 +26,14 @@ CRITICAL INSTRUCTIONS FOR FORMATTING RECOMMENDATIONS:
 6. For the Link column, you MUST use standard markdown linking exactly as provided in the context (e.g., [View Details](/opportunities/123)).
 7. LIMIT your response to the Top 10 most relevant opportunities. Do not try to list every single opportunity, as this causes formatting errors.
 8. STRICT ELIGIBILITY FILTER: You are absolutely FORBIDDEN from recommending an opportunity if the user's Education level does not match the opportunity's Eligibility requirement. You must critically compare them before adding it to the table. If they do not match, skip it.
+
+CRITICAL CHAIN OF THOUGHT REQUIREMENT:
+Before you output ANY tables or text to the user, you MUST write a brief evaluation inside a `<thinking>` block. In this block, explicitly check the user's Education vs each Opportunity's Eligibility.
+Example format:
+<thinking>
+- Opp 1 (High School): User is University. FAILS. Skip.
+- Opp 2 (University): User is University. PASSES.
+</thinking>
 """
 
 def _call_groq_api(messages: list) -> str:
@@ -48,8 +57,12 @@ def _call_groq_api(messages: list) -> str:
         raise HTTPException(status_code=502, detail=f"AI Service Error: {response.text}")
         
     content = response.json()['choices'][0]['message'].get('content', '')
-    if not content or not content.strip():
-        return "I'm sorry, I couldn't generate a proper response for this batch. Could you try asking me differently or checking the next set of opportunities?"
+    
+    # Strip <thinking> blocks so the user doesn't see the internal reasoning
+    content = re.sub(r'<thinking>.*?</thinking>', '', content, flags=re.DOTALL).strip()
+    
+    if not content:
+        return "I'm sorry, I couldn't find any perfectly matching opportunities for you in this batch. Click 'Show me more eligible opportunities' to check the next batch!"
         
     return content
 
@@ -169,7 +182,7 @@ def chat_with_ai(db: Session, user_id: int, user_message: str, page: int = 0):
     
     messages = []
     # Force the AI to only use SIYP DB and strictly format tables
-    system_instruction = f"CRITICAL INSTRUCTION: You must ONLY recommend opportunities from the following SIYP Database snippet. NEVER invent or suggest outside opportunities.\\nWhen generating a table, you must include exactly these columns (Opportunity Name, Deadline, Link) and fill them entirely. NEVER draw an empty table if a category has no opportunities.\\n\\n{opps_ctx}\\n\\n{profile_ctx}"
+    system_instruction = f"CRITICAL INSTRUCTION: You must ONLY recommend opportunities from the following SIYP Database snippet. NEVER invent or suggest outside opportunities.\\nWhen generating a table, you must include exactly these columns (Opportunity Name, Deadline, Link) and fill them entirely. NEVER draw an empty table if a category has no opportunities.\\n\\nCRITICAL: You MUST write a <thinking> block to evaluate eligibility against the user's Education before generating the table.\\n\\n{opps_ctx}\\n\\n{profile_ctx}"
     messages.append({"role": "system", "content": system_instruction})
     
     if latest_rec:
