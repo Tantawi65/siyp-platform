@@ -22,10 +22,9 @@ CRITICAL INSTRUCTIONS FOR FORMATTING RECOMMENDATIONS:
 2. If there are Fixed Deadlines, draw a "Fixed Deadlines" table. If there are Rolling Deadlines, draw a "Rolling Deadlines" table. NEVER draw an empty table. If a category has no opportunities, do not mention it.
 3. The tables MUST have EXACTLY these THREE columns: [Opportunity Name, Deadline, Link].
 4. Do NOT include Match Score, Missing Skills, or any other columns.
-5. NEVER leave any column blank. If you do not have the exact details for an opportunity, DO NOT include it in the table.
 6. For the Link column, you MUST use standard markdown linking exactly as provided in the context (e.g., [View Details](/opportunities/123)).
 7. LIMIT your response to the Top 10 most relevant opportunities. Do not try to list every single opportunity, as this causes formatting errors.
-8. CRITICAL ELIGIBILITY CHECK: You must carefully read the 'Eligibility' of each opportunity. If the user's profile (e.g., University Student) directly contradicts the eligibility (e.g., 'High School Students Only' or 'Bachelors only' when user is in high school), you MUST NOT recommend that opportunity. Exclude it entirely.
+8. STRICT ELIGIBILITY FILTER: You are absolutely FORBIDDEN from recommending an opportunity if the user's Education level does not match the opportunity's Eligibility requirement. You must critically compare them before adding it to the table. If they do not match, skip it.
 """
 
 def _call_groq_api(messages: list) -> str:
