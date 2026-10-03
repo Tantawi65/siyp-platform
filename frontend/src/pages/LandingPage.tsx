@@ -275,10 +275,30 @@ const LandingPage: React.FC = () => {
             </div>
           </ScrollReveal>
           <div className="relative grid grid-cols-1 md:grid-cols-4 gap-8 mt-16">
-            <ScrollReveal animation="expand-x" duration={1500} className="hidden md:block absolute top-7 left-[12%] right-[12%] origin-left h-1 z-0">
-              <div className="w-full h-full bg-gradient-to-r from-gray-200 via-[#E8A857] to-gray-200 rounded-full" />
-              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-[#E8A857] to-transparent animate-pulse-ring rounded-full opacity-50 blur-sm" />
-            </ScrollReveal>
+            
+            {/* The Moving Energy Beam Line */}
+            <div className="hidden md:block absolute top-7 left-[12%] right-[12%] h-[2px] bg-gray-200/80 z-0 overflow-hidden rounded-full">
+              {/* Gold beam */}
+              <div 
+                className="absolute top-0 h-full w-40 bg-gradient-to-r from-transparent via-[#E8A857] to-transparent shadow-[0_0_12px_#E8A857]"
+                style={{ animation: 'shooting-beam 3s infinite cubic-bezier(0.4, 0, 0.2, 1)' }}
+              />
+              {/* Green follow beam */}
+              <div 
+                className="absolute top-0 h-full w-24 bg-gradient-to-r from-transparent via-[#1B5442] to-transparent shadow-[0_0_12px_#1B5442]"
+                style={{ animation: 'shooting-beam 3s infinite cubic-bezier(0.4, 0, 0.2, 1)', animationDelay: '0.15s' }}
+              />
+            </div>
+
+            <style>{`
+              @keyframes shooting-beam {
+                0% { left: -20%; opacity: 0; }
+                10% { opacity: 1; }
+                90% { opacity: 1; }
+                100% { left: 100%; opacity: 0; }
+              }
+            `}</style>
+
             <ScrollReveal delay={100} animation="zoom-in"><Step num={1} title="Create Account" desc="Sign up free and set up your profile in minutes." active /></ScrollReveal>
             <ScrollReveal delay={250} animation="zoom-in"><Step num={2} title="Explore" desc="Browse curated opportunities tailored to your goals." /></ScrollReveal>
             <ScrollReveal delay={400} animation="zoom-in"><Step num={3} title="Apply" desc="Use our tracker to organise and submit applications." /></ScrollReveal>
